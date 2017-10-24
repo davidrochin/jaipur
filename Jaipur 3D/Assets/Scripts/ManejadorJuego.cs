@@ -8,7 +8,7 @@ public class ManejadorJuego : MonoBehaviour {
     public bool turnoJugador = true;
     public int ronda = 1;
 
-    [Header("Mazos")]
+    [Header("Grupos")]
     public Grupo mazoMercado;
     public Grupo mazoPrincipal, mazoDescartar, mazoJugador, mazoJugadorCamellos, mazoOponente, mazoOponenteCamellos;
 
@@ -282,6 +282,7 @@ public class ManejadorJuego : MonoBehaviour {
             }
         }
 
+        Debug.Log(mazoMercado);
         //Revisar si la carta es del mercado
         if (cartasSeleccionadas[0].grupo != mazoMercado) {
             Debug.Log("Solo puedes tomar cartas del mercado.");

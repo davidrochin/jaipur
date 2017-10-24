@@ -45,7 +45,37 @@ public class Carta : MonoBehaviour {
     }
 
     void ActualizarTextura() {
+        string nombreArchivo = "cuero.mat";
 
+        switch (mercancia) {
+            case TipoMercancia.Cuero:
+                nombreArchivo = "cuero";
+                break;
+            case TipoMercancia.Especias:
+                nombreArchivo = "especias";
+                break;
+            case TipoMercancia.Tela:
+                nombreArchivo = "tela";
+                break;
+            case TipoMercancia.Plata:
+                nombreArchivo = "plata";
+                break;
+            case TipoMercancia.Oro:
+                nombreArchivo = "oro";
+                break;
+            case TipoMercancia.Diamante:
+                nombreArchivo = "diamante";
+                break;
+            case TipoMercancia.Camello:
+                nombreArchivo = "camello";
+                break;
+        }
+
+        foreach (Transform hijo in transform) {
+            if (hijo.tag.Equals("Frente Carta")) {
+                hijo.GetComponent<Renderer>().material = Resources.Load("Cartas/" + nombreArchivo, typeof(Material)) as Material;
+            }
+        }
     }
 
     public enum TipoMercancia { Cuero, Especias, Tela, Plata, Oro, Diamante, Camello }

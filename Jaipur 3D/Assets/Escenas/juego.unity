@@ -219,9 +219,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00afeb919e5680c4795763935bad8b32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tipoAcomodo: 0
+  tipoAcomodo: 2
   tipoGrupo: 0
-  objetosSeleccionables: 0
+  objetosSeleccionables: 1
   objetosCaraAbajo: 0
   rotacionDesordenada: 0
   maxRotacionAleatoria: 7
@@ -319,7 +319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00afeb919e5680c4795763935bad8b32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tipoAcomodo: 0
+  tipoAcomodo: 2
   tipoGrupo: 0
   objetosSeleccionables: 0
   objetosCaraAbajo: 0
@@ -418,7 +418,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 568848876}
+      - m_Target: {fileID: 2080080221}
         m_MethodName: TomarUna
         m_Mode: 1
         m_Arguments:
@@ -538,64 +538,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 509066387}
---- !u!1 &568848874
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 568848875}
-  - component: {fileID: 568848876}
-  m_Layer: 0
-  m_Name: ManejadorJuego
-  m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &568848875
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 568848874}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.66, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &568848876
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 568848874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e904879168c12804aabc3452db7bce9c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  turnoJugador: 1
-  ronda: 1
-  mazoMercado: {fileID: 0}
-  mazoPrincipal: {fileID: 0}
-  mazoDescartar: {fileID: 0}
-  mazoJugador: {fileID: 0}
-  mazoJugadorCamellos: {fileID: 0}
-  mazoOponente: {fileID: 0}
-  mazoOponenteCamellos: {fileID: 0}
-  fichasPrincipal: {fileID: 0}
-  fichasDiamante: {fileID: 0}
-  fichasOro: {fileID: 0}
-  fichasPlata: {fileID: 0}
-  fichasTela: {fileID: 0}
-  fichasEspecias: {fileID: 0}
-  fichasCuero: {fileID: 0}
-  panelAcciones: {fileID: 0}
-  objetosSeleccionados: []
 --- !u!1 &681889322
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,7 +598,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &695590013
 GameObject:
@@ -808,7 +750,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 568848876}
+      - m_Target: {fileID: 2080080221}
         m_MethodName: Vender
         m_Mode: 1
         m_Arguments:
@@ -1024,7 +966,7 @@ MonoBehaviour:
   tipoGrupo: 0
   objetosSeleccionables: 0
   objetosCaraAbajo: 0
-  rotacionDesordenada: 0
+  rotacionDesordenada: 1
   maxRotacionAleatoria: 7
   invertirDireccionLateral: 0
   hijos: []
@@ -1649,7 +1591,7 @@ RectTransform:
   - {fileID: 1880325615}
   - {fileID: 1163843091}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1888,7 +1830,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 568848876}
+      - m_Target: {fileID: 2080080221}
         m_MethodName: Trueque
         m_Mode: 1
         m_Arguments:
@@ -2079,7 +2021,7 @@ MonoBehaviour:
   tipoAcomodo: 0
   tipoGrupo: 0
   objetosSeleccionables: 0
-  objetosCaraAbajo: 0
+  objetosCaraAbajo: 1
   rotacionDesordenada: 0
   maxRotacionAleatoria: 7
   invertirDireccionLateral: 0
@@ -2176,9 +2118,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00afeb919e5680c4795763935bad8b32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tipoAcomodo: 0
+  tipoAcomodo: 2
   tipoGrupo: 0
-  objetosSeleccionables: 0
+  objetosSeleccionables: 1
   objetosCaraAbajo: 0
   rotacionDesordenada: 0
   maxRotacionAleatoria: 7
@@ -2222,14 +2164,14 @@ MonoBehaviour:
   mazoJugadorCamellos: {fileID: 2079350433}
   mazoOponente: {fileID: 327972669}
   mazoOponenteCamellos: {fileID: 1778464893}
-  fichasPrincipal: {fileID: 0}
-  fichasDiamante: {fileID: 0}
-  fichasOro: {fileID: 0}
-  fichasPlata: {fileID: 0}
-  fichasTela: {fileID: 0}
-  fichasEspecias: {fileID: 0}
-  fichasCuero: {fileID: 0}
-  panelAcciones: {fileID: 0}
+  fichasPrincipal: {fileID: 1563731553}
+  fichasDiamante: {fileID: 294010216}
+  fichasOro: {fileID: 1159711086}
+  fichasPlata: {fileID: 76725901}
+  fichasTela: {fileID: 1278789340}
+  fichasEspecias: {fileID: 2051391759}
+  fichasCuero: {fileID: 1385327579}
+  panelAcciones: {fileID: 1880325614}
   objetosSeleccionados: []
 --- !u!4 &2080080222
 Transform:
@@ -2242,5 +2184,5 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
