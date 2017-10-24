@@ -12,22 +12,39 @@ public class Carta : MonoBehaviour {
     public Grupo grupo;
 
     private void Awake() {
-
+        //Asignar un material a la carta, conforme a su tipo de material.
+        ActualizarTextura();
     }
 
     private void OnMouseDown() {
+        //Tratar de agregar la carta a la selección si su Mazo lo permite
+        if (GetComponentInParent<Grupo>().objetosSeleccionables) {
 
+            //Revisar si se necesita De-seleccionar o Seleccionar
+            if (seleccionada) {
+                //De-seleccionar
+                FindObjectOfType<ManejadorJuego>().RemoverDeSeleccion(gameObject, true);
+                SetSeleccionada(false);
+            } else if (!seleccionada) {
+                //Seleccionar
+                if (FindObjectOfType<ManejadorJuego>().AgregarASeleccion(gameObject, true)) {
+                    SetSeleccionada(true);
+                }
+            }
+
+        }
     }
 
     public void SetSeleccionada(bool param) {
-
+        seleccionada = param;
     }
 
-    public void SetMaterial(TipoMercancia material) {
-
+    public void SetMercancia(TipoMercancia mercancia) {
+        this.mercancia = mercancia;
+        ActualizarTextura();
     }
 
-    void SetTextura() {
+    void ActualizarTextura() {
 
     }
 
