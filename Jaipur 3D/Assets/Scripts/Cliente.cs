@@ -16,11 +16,16 @@ public class Cliente : MonoBehaviour
     private StreamWriter escritor;
     private StreamReader lector;
 
+    private BinaryWriter escritorBin;
+   // private BinaryReader lectorBin;
+    private ManejadorJuego manejador;
+
     private List<ClienteJuego> jugadores = new List<ClienteJuego>();
 
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
+        manejador = FindObjectOfType<ManejadorJuego>();
     }
 
     public bool ConectarAlServidor(string host, int puerto)
@@ -31,8 +36,10 @@ public class Cliente : MonoBehaviour
         {
             socket = new TcpClient(host, puerto);
             stream = socket.GetStream();
-            escritor = new StreamWriter(stream);
-            lector = new StreamReader(stream);
+            //escritor = new StreamWriter(stream);
+            //lector = new StreamReader(stream);
+            escritorBin = new BinaryWriter(stream);
+            //lectorBin = new BinaryReader(stream);
 
             socketListo = true;
         }
@@ -50,13 +57,24 @@ public class Cliente : MonoBehaviour
         {
             if (stream.DataAvailable)
             {
-                string datos = lector.ReadLine();
-                if (datos != null)
+                byte[] datosBin = Servidor.ReadToEnd(stream);
+                //string datos = lector.ReadLine();
+                if (datosBin != null)
                 {
-                    DatosEntrantes(datos);
+                    //DatosEntrantes(datos);
+                    MovimientosEntrantes(datosBin);
                 }
             }
         }
+    }
+
+    public void EnviarMovimiento(Movimiento mov)
+    {
+        if (!socketListo)
+            return;
+        
+        escritorBin.Write(mov.Serializar());
+        escritor.Flush();
     }
 
     // Enviar mensajes al servidor
@@ -67,6 +85,19 @@ public class Cliente : MonoBehaviour
 
         escritor.WriteLine(datos);
         escritor.Flush();
+    }
+
+    private void MovimientosEntrantes(byte[] movE)
+    {
+        
+        Movimiento mov = Movimiento.Deserializar(movE);
+        int[] prob = { -5 };
+        if (mov.ids == prob) 
+        {
+            UsuarioConectado(clienteNombre, false);
+        }
+        Debug.Log("Me llego: "+mov.tipoMovimiento);
+        //manejador.EjecutarMovimientoOponente(Movimiento.Deserializar(movE));
     }
 
     // Leer mensajes del servidor

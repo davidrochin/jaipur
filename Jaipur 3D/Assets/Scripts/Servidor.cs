@@ -17,6 +17,8 @@ public class Servidor : MonoBehaviour
     private TcpListener servidor;
     private bool servidorIniciado;
 
+    private Movimiento movObjeto;
+
     public void Init()
     {
         // Se hace para cambiar de escena ( de menu al juego, se crea el servidor pero no se destruye)
@@ -56,12 +58,16 @@ public class Servidor : MonoBehaviour
                 NetworkStream s = c.tcp.GetStream();
                 if (s.DataAvailable)
                 {
-                    StreamReader lector = new StreamReader(s, true);
-                    string datos = lector.ReadLine();
+                    //StreamReader lector = new StreamReader(s, true);
+                    //string datos = lector.ReadLine();
+                    
+                    byte[] movimiento = ReadToEnd(s);
+                    //string datosMov = lectorBin.ReadString();
 
-                    if (datos != null)
+                    if (movimiento != null)
                     {
-                        DatosEntrantes(c, datos);
+                        //DatosEntrantes(c, datos);
+                        MovimientosEntrantes(c, movimiento);
                     }
                 }
             }
@@ -95,7 +101,10 @@ public class Servidor : MonoBehaviour
 
         empezarEscuchar();
 
-        Broadcast("SWHO|" + todosLosClientes, clientes[clientes.Count - 1]);
+        //Broadcast("SWHO|" + todosLosClientes, clientes[clientes.Count - 1]);
+        int[] prob = { -5 };
+        Movimiento m = new Movimiento(Movimiento.TipoMovimiento.Ninguno, prob);
+        BroadcastMov(m.Serializar(), clientes);
     }
 
     private bool estaConectado(TcpClient c)
@@ -117,6 +126,33 @@ public class Servidor : MonoBehaviour
         {
             return false;
         }
+    }
+
+    private void BroadcastMov(byte[] datos, List<ServidorCliente> cl)
+    {
+        foreach (ServidorCliente sc in cl)
+        {
+            try
+            {
+                BinaryWriter escritorBin = new BinaryWriter(sc.tcp.GetStream());
+                escritorBin.Write(datos);
+                escritorBin.Flush();
+
+                //StreamWriter escritor = new StreamWriter(sc.tcp.GetStream());
+                ///escritor.WriteLine(datos);
+                //escritor.Flush();
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error de envio : " + e.Message);
+            }
+        }
+    }
+
+    private void BroadcastMov(byte[] datos, ServidorCliente c)
+    {
+        List<ServidorCliente> sc = new List<ServidorCliente> { c };
+        BroadcastMov(datos, sc);
     }
 
     // Enviar desde servidor
@@ -142,6 +178,11 @@ public class Servidor : MonoBehaviour
         Broadcast(datos, sc);
     }
 
+    private void MovimientosEntrantes(ServidorCliente c, byte[] datos)
+    {
+        BroadcastMov(datos, clientes);
+    }
+
     // Leer desde servidor
     private void DatosEntrantes(ServidorCliente c, string datos)
     {
@@ -164,6 +205,58 @@ public class Servidor : MonoBehaviour
         }
     }
 
+        
+    public static byte[] ReadToEnd(System.IO.Stream stream)
+    {
+        long originalPosition = 0;
+
+        if(stream.CanSeek)
+        {
+             originalPosition = stream.Position;
+             stream.Position = 0;
+        }
+
+        try
+        {
+            byte[] readBuffer = new byte[4096];
+
+            int totalBytesRead = 0;
+            int bytesRead;
+
+            while ((bytesRead = stream.Read(readBuffer, totalBytesRead, readBuffer.Length - totalBytesRead)) > 0)
+            {
+                totalBytesRead += bytesRead;
+
+                if (totalBytesRead == readBuffer.Length)
+                {
+                    int nextByte = stream.ReadByte();
+                    if (nextByte != -1)
+                    {
+                        byte[] temp = new byte[readBuffer.Length * 2];
+                        Buffer.BlockCopy(readBuffer, 0, temp, 0, readBuffer.Length);
+                        Buffer.SetByte(temp, totalBytesRead, (byte)nextByte);
+                        readBuffer = temp;
+                        totalBytesRead++;
+                    }
+                }
+            }
+
+            byte[] buffer = readBuffer;
+            if (readBuffer.Length != totalBytesRead)
+            {
+                buffer = new byte[totalBytesRead];
+                Buffer.BlockCopy(readBuffer, 0, buffer, 0, totalBytesRead);
+            }
+            return buffer;
+        }
+        finally
+        {
+            if(stream.CanSeek)
+            {
+                 stream.Position = originalPosition; 
+            }
+        }
+    }
 }
 
 public class ServidorCliente

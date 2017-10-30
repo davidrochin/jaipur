@@ -111,7 +111,8 @@ public class ManejadorMenu : MonoBehaviour
     public void IniciarJuego()
     {
         // Cargamos la escena del juego
-        SceneManager.LoadScene("juego");
+        // SceneManager.LoadScene("juego");
+        SceneManager.LoadScene("prueba");
     }
 
 }
