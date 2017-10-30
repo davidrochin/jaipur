@@ -103,7 +103,7 @@ public class Cliente : MonoBehaviour
         if (jugadores.Count == 2)
         {
             // Se intancia la escena a cargar desde el manejador del menu
-            
+            ManejadorMenu.Instance.IniciarJuego();
         }
     }
 
