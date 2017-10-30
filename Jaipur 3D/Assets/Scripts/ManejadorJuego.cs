@@ -36,6 +36,9 @@ public class ManejadorJuego : MonoBehaviour {
         //Inicializar elementos de la interfaz
         if (panelAcciones == null) { panelAcciones = GameObject.Find("panel_acciones"); }
         EstadoPanelAcciones(false);
+
+        //Obtener el cliete
+        cliente = GetComponent<Cliente>();
     }
 
     void Start() {
@@ -305,8 +308,13 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Todo está bien
         foreach (GameObject objeto in objetosSeleccionados) {
+            cartasMovidas.Add(objeto.GetComponent<Carta>().id);
             DarAJugador(objeto);
         }
+
+        //Generar el objeto tipo Movimiento que se va a enviar
+        movimiento = new Movimiento(Movimiento.TipoMovimiento.Tomar, cartasMovidas.ToArray());
+
         LimpiarSeleccion();
         LlenarMercado();
     }
@@ -343,8 +351,13 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Todo en orden. Vender las cartas
         foreach (Carta carta in cartasSeleccionadas) {
+            cartasMovidas.Add(carta.id);
             carta.transform.SetParent(mazoDescartar.transform);
         }
+
+        //Generar el objeto de tipo Movimiento que se va a enviar
+        movimiento = new Movimiento(Movimiento.TipoMovimiento.Vender, cartasMovidas.ToArray());
+
         LimpiarSeleccion();
     }
 
@@ -399,12 +412,19 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Hacer el trueque
         foreach (Carta carta in cartasSeleccionadas) {
+
+            //Agregar la carta a la lista de cartas movidas para posteriormente mandarlas al otro cliente.
+            cartasMovidas.Add(carta.id);
+
             if (carta.grupo == mazoMercado) {
                 DarAJugador(carta.gameObject);
             } else if (carta.grupo == mazoJugador || carta.grupo == mazoJugadorCamellos) {
                 carta.transform.SetParent(mazoMercado.transform);
             }
         }
+
+        //Generar el objeto de tipo Movimiento que se va a enviar
+        movimiento = new Movimiento(Movimiento.TipoMovimiento.Tomar, cartasMovidas.ToArray());
 
         LimpiarSeleccion();
     }
@@ -527,15 +547,21 @@ public class ManejadorJuego : MonoBehaviour {
 
     #region Multijugador
 
-    List<Carta> cartasMovidas = new List<Carta>();
+    Cliente cliente;
+    Movimiento movimiento;
+    List<int> cartasMovidas = new List<int>();
 
     public void EjecutarMovimientoOponente(Movimiento movimiento) {
-
+        turnoJugador = false;
     }
 
     public void MandarMovimientoJugador(Movimiento movimiento) {
-        //LOGICA
+        //cliente.EnviarMovimiento(movimiento);
         cartasMovidas.Clear();
+    }
+
+    public int[] GetOrdenGrupo(Grupo grupo) {
+        return null;
     }
 
     #endregion

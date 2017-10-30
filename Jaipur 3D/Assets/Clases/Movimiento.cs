@@ -2,14 +2,16 @@
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
+[System.Serializable]
 public class Movimiento {
     public int[] ids;
     public TipoMovimiento tipoMovimiento;
 
-    public enum TipoMovimiento { Ninguno, Tomar, Vender, Trueque, RevolverCartas }
+    public enum TipoMovimiento { Ninguno, Tomar, Vender, Trueque, OrdenMazoPrincipal }
 
-    public Movimiento(TipoMovimiento tipoMov) {
+    public Movimiento(TipoMovimiento tipoMov, int[] cartas) {
         tipoMovimiento = tipoMov;
+        cartas = ids;
     }
 
     public byte[] Serializar() {
