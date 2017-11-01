@@ -12,15 +12,11 @@ public class ManejadorMenu : MonoBehaviour
 
     public GameObject menuPrincipal;
     public GameObject menuCrear;
-    public GameObject menuConectar;
+    public GameObject menuUnirse;
 
     public GameObject servidorPrefab;
     public GameObject clientePrefab;
 
-    public InputField nombreInput;
-
-
-    // Use this for initialization
     void Start()
     {
         Instance = this;
@@ -30,81 +26,33 @@ public class ManejadorMenu : MonoBehaviour
         menuPrincipal.SetActive(true);
     }
 
-    // Update is called once per frame
     void Update()
     {
 
     }
 
-    public void BotonAtras()
+    public void MostrarMenuPrincipal(bool valor)
     {
         OcultarTodos();
-        menuPrincipal.SetActive(true);
-
-        Servidor s = FindObjectOfType<Servidor>();
-        if (s != null)
-            Destroy(s.gameObject);
-        Cliente c = FindObjectOfType<Cliente>();
-        if (c != null)
-            Destroy(c.gameObject);
+        menuPrincipal.SetActive(valor);
     }
 
-    public void BotonCrear()
-    {
-        try
-        {
-            Servidor s = Instantiate(servidorPrefab).GetComponent<Servidor>();
-            s.Init();
-
-            Cliente c = Instantiate(clientePrefab).GetComponent<Cliente>();
-            c.clienteNombre = nombreInput.text;
-            c.esAnfitrion = true;
-
-            if (c.clienteNombre == "")
-                c.clienteNombre = "Anfitrion";
-            c.ConectarAlServidor("localhost", 6321);
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-
-        OcultarTodos();
-        menuCrear.SetActive(true);
-    }
-
-    public void BotonUnirse()
+    public void MostrarMenuCrear(bool valor)
     {
         OcultarTodos();
-        menuConectar.SetActive(true);
+        menuCrear.SetActive(valor);
     }
 
-    public void BotonConectarAlServidor()
+    public void MostrarMenuUnirse(bool valor)
     {
-        string direccionAnfitrion = GameObject.Find("Input_IP").GetComponent<InputField>().text; ;
-        if (direccionAnfitrion == "")
-            direccionAnfitrion = "localhost"; // LocalHost o 127.0.0.1 es igual
-
-        try
-        {
-            Cliente c = Instantiate(clientePrefab).GetComponent<Cliente>();
-            c.clienteNombre = nombreInput.text;
-            if (c.clienteNombre == "")
-                c.clienteNombre = "Cliente";
-            c.ConectarAlServidor(direccionAnfitrion, 6321);
-            menuConectar.SetActive(false);
-        }
-        catch (Exception e)
-        {
-            Debug.Log(e.Message);
-        }
-
+        OcultarTodos();
+        menuUnirse.SetActive(valor);
     }
 
     void OcultarTodos()
     {
         menuPrincipal.SetActive(false);
-        menuConectar.SetActive(false);
+        menuUnirse.SetActive(false);
         menuCrear.SetActive(false);
     }
 
