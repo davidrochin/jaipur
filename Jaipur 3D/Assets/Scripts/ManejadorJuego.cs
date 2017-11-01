@@ -314,7 +314,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Generar el objeto tipo Movimiento que se va a enviar
-        movimiento = new Movimiento(Movimiento.TipoMovimiento.Tomar, cartasMovidas.ToArray());
+        //movimiento = new Movimiento(Movimiento.TipoMovimiento.Tomar, cartasMovidas.ToArray());
 
         LimpiarSeleccion();
         LlenarMercado();
@@ -357,7 +357,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Generar el objeto de tipo Movimiento que se va a enviar
-        movimiento = new Movimiento(Movimiento.TipoMovimiento.Vender, cartasMovidas.ToArray());
+        //movimiento = new Movimiento(Movimiento.TipoMovimiento.Vender, cartasMovidas.ToArray());
 
         LimpiarSeleccion();
     }
@@ -425,7 +425,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Generar el objeto de tipo Movimiento que se va a enviar
-        movimiento = new Movimiento(Movimiento.TipoMovimiento.Tomar, cartasMovidas.ToArray());
+        //movimiento = new Movimiento(Movimiento.TipoMovimiento.Tomar, cartasMovidas.ToArray());
 
         LimpiarSeleccion();
     }
@@ -468,7 +468,7 @@ public class ManejadorJuego : MonoBehaviour {
             mazoPrincipal.RevolverCartas();
 
             //Mandar orden de las cartas al otro cliente
-            Movimiento movOrden = new Movimiento(Movimiento.TipoMovimiento.OrdenMazoPrincipal, GetOrdenGrupo(mazoPrincipal));
+            //Movimiento movOrden = new Movimiento(Movimiento.TipoMovimiento.OrdenMazoPrincipal, GetOrdenGrupo(mazoPrincipal));
             //cliente.EnviarMovimiento(movOrden);
         } 
         
