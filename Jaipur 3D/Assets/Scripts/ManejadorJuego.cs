@@ -37,8 +37,9 @@ public class ManejadorJuego : MonoBehaviour {
         if (panelAcciones == null) { panelAcciones = GameObject.Find("panel_acciones"); }
         EstadoPanelAcciones(false);
 
-        //Obtener el cliete
-        cliente = GetComponent<Cliente>();
+        //Obtener el cliete y servidor
+        cliente = FindObjectOfType<Cliente>();
+        servidor = FindObjectOfType<Servidor>();
     }
 
     void Start() {
@@ -456,8 +457,29 @@ public class ManejadorJuego : MonoBehaviour {
     IEnumerator Juego() {
         yield return new WaitForSeconds(1f);
 
-        //Revolver las cartas
-        mazoPrincipal.RevolverCartas();
+        //Si es PRUEBA
+        if (servidor == null && cliente == null) {
+            mazoPrincipal.RevolverCartas();
+        }
+
+        //Si es ANFITRIÓN
+        else if(servidor != null) {
+            //Revolver las cartas
+            mazoPrincipal.RevolverCartas();
+
+            //Mandar orden de las cartas al otro cliente
+            Movimiento movOrden = new Movimiento(Movimiento.TipoMovimiento.OrdenMazoPrincipal, GetOrdenGrupo(mazoPrincipal));
+            //cliente.EnviarMovimiento(movOrden);
+        } 
+        
+        //Si es CLIENTE
+        else {
+            /*while (cliente.SolicitarOrdenGrupoPrincipal() == null) {
+                yield return new WaitForEndOfFrame();
+            }*/
+            //mazoPrincipal.OrdenarCartasPorId(cliente.SolicitarOrdenGrupoPrincipal());
+
+        }
 
         //Agregar los 3 camellos iniciales y llenar el mercado de cartas
         AgregarCamellosIniciales();
@@ -548,6 +570,7 @@ public class ManejadorJuego : MonoBehaviour {
     #region Multijugador
 
     Cliente cliente;
+    Servidor servidor;
     Movimiento movimiento;
     List<int> cartasMovidas = new List<int>();
 
@@ -561,7 +584,21 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     public int[] GetOrdenGrupo(Grupo grupo) {
-        return null;
+        int[] orden = new int[grupo.hijosCarta.Length];
+
+        for (int x = 0; x < orden.Length; x++) {
+            orden[x] = grupo.hijosCarta[x].id;
+        }
+
+        return orden;
+    }
+
+    #endregion
+
+    #region Utiles
+
+    public Carta[] ObtenerTodasLasCartas() {
+        return FindObjectsOfType<Carta>();
     }
 
     #endregion

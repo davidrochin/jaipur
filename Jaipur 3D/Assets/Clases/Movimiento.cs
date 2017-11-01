@@ -11,7 +11,7 @@ public class Movimiento {
 
     public Movimiento(TipoMovimiento tipoMov, int[] cartas) {
         tipoMovimiento = tipoMov;
-        cartas = ids;
+        ids = cartas;
     }
 
     public byte[] Serializar() {

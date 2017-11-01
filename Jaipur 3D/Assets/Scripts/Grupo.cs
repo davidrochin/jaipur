@@ -199,6 +199,30 @@ public class Grupo : MonoBehaviour {
         return estadoCartas.ToArray();
     }
 
+    public void OrdenarCartasPorId(int[] orden) {
+        autoActualizarHijos = false;
+
+        //Obtener todas las cartas del juego
+        Carta[] todasCartas = FindObjectsOfType<Carta>();
+
+        //Sacar a todos los hijos del transform
+        foreach (Carta carta in hijosCarta) {
+            carta.transform.SetParent(null);
+        }
+
+        //Agregar las cartas en el orden indicado
+        for (int x = 0; x < orden.Length; x++) {
+            int idActual = orden[x];
+            foreach (Carta carta in todasCartas) {
+                if (carta.id == idActual) {
+                    carta.transform.SetParent(transform);
+                }
+            }
+        }
+
+        autoActualizarHijos = true;
+    }
+
     public void OrdenarPorTipo() {
         //Ordenarlas en un List
         List<GameObject> ordenadas = new List<GameObject>();
