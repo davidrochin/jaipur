@@ -40,7 +40,8 @@ public class Servidor : MonoBehaviour
             {
                 Debug.Log("Ya hay 2 jugadores. Iniciando Juego.");
                 juegoIniciado = true;
-                SceneManager.LoadScene("juego");
+                //SceneManager.LoadScene("juego");
+                EnviarAccionATodos(MensajeAccion.TipoAccion.IniciarJuego);
             }
         }
     }
@@ -61,7 +62,7 @@ public class Servidor : MonoBehaviour
     public void CrearServidor()
     {
         NetworkServer.RegisterHandler(MensajeString.TIPO, EnviarStringATodos);
-        NetworkServer.RegisterHandler(Movimiento.TIPO, EnviarMovimientoATodos);
+        NetworkServer.RegisterHandler(Movimiento.TIPO, EnviarMovimientoAlOtro);
         NetworkServer.Listen(PUERTO);
     }
 
@@ -72,9 +73,27 @@ public class Servidor : MonoBehaviour
         NetworkServer.SendToAll(MensajeString.TIPO, msjStr);
     }
 
-    public void EnviarMovimientoATodos(NetworkMessage mensajeRed)
+    public void EnviarMovimientoAlOtro(NetworkMessage mensajeRed)
     {
         Movimiento msjMov = mensajeRed.ReadMessage<Movimiento>();
-        NetworkServer.SendToAll(Movimiento.TIPO, msjMov);
+        Cliente cliente = FindObjectOfType<Cliente>();
+        foreach (NetworkConnection conn in NetworkServer.connections)
+        {
+            if (conn != null)
+            {
+                if (conn.connectionId != mensajeRed.conn.connectionId)
+                {
+                    NetworkServer.SendToClient(conn.connectionId, Movimiento.TIPO, msjMov);
+                }
+            }
+        }
+        //NetworkServer.SendToAll(Movimiento.TIPO, msjMov);
+    }
+
+    public void EnviarAccionATodos(MensajeAccion.TipoAccion accion)
+    {
+        MensajeAccion msjAcc = new MensajeAccion();
+        msjAcc.tipoAccion = accion;
+        NetworkServer.SendToAll(MensajeAccion.TIPO, msjAcc);
     }
 }

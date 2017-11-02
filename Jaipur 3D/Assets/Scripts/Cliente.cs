@@ -7,13 +7,21 @@ using UnityEngine.SceneManagement;
 public class Cliente : MonoBehaviour
 {
 
-    NetworkClient cliente;
+    public NetworkClient cliente;
+    public ManejadorJuego manejadorJuego;
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
 
     public void Arrancar(string ip, int puerto)
     {
         cliente = new NetworkClient();
         cliente.RegisterHandler(MsgType.Connect, AlConectarse);
         cliente.RegisterHandler(MensajeString.TIPO, ImprimirEnConsola);
+        cliente.RegisterHandler(MensajeAccion.TIPO, EjecutarAccion);
+        cliente.RegisterHandler(Movimiento.TIPO, EjecutarMovimiento);
         cliente.Connect(ip, puerto);
     }
 
@@ -31,7 +39,7 @@ public class Cliente : MonoBehaviour
 
     public void EnviarMovimiento(Movimiento mov)
     {
-        NetworkServer.SendToAll(Movimiento.TIPO, mov);
+        cliente.Send(Movimiento.TIPO, mov);
     }
 
     public void EnviarString(string msj)
@@ -44,9 +52,18 @@ public class Cliente : MonoBehaviour
     public void EjecutarAccion(NetworkMessage msjRed)
     {
         MensajeAccion msjAcc = msjRed.ReadMessage<MensajeAccion>();
+        Debug.Log(msjAcc.tipoAccion);
         switch (msjAcc.tipoAccion)
         {
-
+            case MensajeAccion.TipoAccion.IniciarJuego:
+                SceneManager.LoadScene("juego");
+                break;
         }
+    }
+
+    public void EjecutarMovimiento(NetworkMessage msjRed)
+    {
+        Movimiento mov = msjRed.ReadMessage<Movimiento>();
+        manejadorJuego.EjecutarMovimientoOponente(mov);
     }
 }
