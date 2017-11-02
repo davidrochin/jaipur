@@ -45,6 +45,9 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Entrar al cliente y darle la referencia de este ManejadorJuego
         if(cliente != null) { cliente.manejadorJuego = this; }
+
+        //Determinar que tipo de jugador es este
+        DeterminarTipoJugador();
         
     }
 
@@ -338,6 +341,9 @@ public class ManejadorJuego : MonoBehaviour {
 
     public void Vender() {
 
+        //Lista para mandar las cartas movidas
+        List<int> cartasMovidas = new List<int>();
+
         //Revisar que haya cartas seleccionadas
         if (cartasSeleccionadas.Count < 1) {
             Debug.Log("¡Necesitas seleccionar al menos una carta!");
@@ -373,12 +379,18 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Generar el objeto de tipo Movimiento que se va a enviar
-        //movimiento = new Movimiento(Movimiento.TipoMovimiento.Vender, cartasMovidas.ToArray());
+        Movimiento mov = new Movimiento();
+        mov.ids = cartasMovidas.ToArray();
+        mov.tipoMovimiento = Movimiento.TipoMovimiento.Vender;
+        cliente.EnviarMovimiento(mov);
 
         LimpiarSeleccion();
     }
 
     public void Trueque() {
+
+        //Lista para mandar las cartas movidas
+        List<int> cartasMovidas = new List<int>();
 
         //Revisar que sea el mismo numero de cartas en los dos lados
         int cartasSelecionadasMercado = 0;
@@ -441,7 +453,10 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Generar el objeto de tipo Movimiento que se va a enviar
-        //movimiento = new Movimiento(Movimiento.TipoMovimiento.Tomar, cartasMovidas.ToArray());
+        Movimiento mov = new Movimiento();
+        mov.ids = cartasMovidas.ToArray();
+        mov.tipoMovimiento = Movimiento.TipoMovimiento.Trueque;
+        cliente.EnviarMovimiento(mov);
 
         LimpiarSeleccion();
     }
@@ -478,7 +493,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Si es ANFITRIÓN
-        if (servidor != null) {
+        if (tipoJugador == TipoJugador.Anfitrion) {
             Debug.Log("Soy Host");
             //Revolver las cartas
             mazoPrincipal.RevolverCartas();
@@ -493,7 +508,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Si es solo CLIENTE
-        if (servidor == null) {
+        if (tipoJugador == TipoJugador.Invitado) {
             yield return new WaitUntil(() => cartasBarajeadas);
         }
 
@@ -520,13 +535,23 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Repartir al jugador
         foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
-            DarAJugador(x);
+            if(tipoJugador == TipoJugador.Anfitrion) {
+                DarAJugador(x);
+            } else {
+                DarAOponente(x);
+            }
+            
             yield return new WaitForSeconds(TIEMPO_ENTRE_CARTA_ANIMADA);
         }
 
         //Repartir al oponente
         foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
-            DarAOponente(x);
+            if (tipoJugador == TipoJugador.Anfitrion) {
+                DarAOponente(x);
+            } else {
+                DarAJugador(x);
+            }
+            
             yield return new WaitForSeconds(TIEMPO_ENTRE_CARTA_ANIMADA);
         }
 
@@ -587,14 +612,21 @@ public class ManejadorJuego : MonoBehaviour {
 
     #region Multijugador
 
+    public TipoJugador tipoJugador;
+
     Cliente cliente;
     Servidor servidor;
     NetworkManager networkManager;
 
-    Movimiento movimiento;
-    List<int> cartasMovidas = new List<int>();
-
     bool cartasBarajeadas = false;
+
+    public void DeterminarTipoJugador() {
+        if(servidor != null) {
+            tipoJugador = TipoJugador.Anfitrion;
+        } else {
+            tipoJugador = TipoJugador.Invitado;
+        }
+    }
 
     public void EjecutarMovimientoOponente(Movimiento movimiento) {
 
@@ -620,23 +652,35 @@ public class ManejadorJuego : MonoBehaviour {
                             carta.transform.SetParent(mazoOponente.transform);
                         }
                     }
-                    
                 }
+                LlenarMercado();
                 break;
             case Movimiento.TipoMovimiento.Vender:
-
+                foreach (Carta carta in todasCartas) {
+                    //Revisar si la carta se movió
+                    if (movimiento.SeEncuentraId(carta.id)) {
+                        //Mandarla a su mazo correspondiente
+                        carta.transform.SetParent(mazoDescartar.transform);
+                    }
+                }
                 break;
             case Movimiento.TipoMovimiento.Trueque:
-
+                foreach (Carta carta in todasCartas) {
+                    //Revisar si la carta se movió
+                    if (movimiento.SeEncuentraId(carta.id)) {
+                        //Mandarla a su mazo correspondiente
+                        if(carta.grupo == mazoOponente || carta.grupo == mazoOponenteCamellos) {
+                            carta.transform.SetParent(mazoMercado.transform);
+                        }
+                        else if(carta.grupo == mazoMercado) {
+                            DarAOponente(carta.gameObject);
+                        }
+                    }
+                }
                 break;
         }
 
         turnoJugador = false;
-    }
-
-    public void MandarMovimientoJugador(Movimiento movimiento) {
-        cliente.EnviarMovimiento(movimiento);
-        cartasMovidas.Clear();
     }
 
     public int[] GetOrdenGrupo(Grupo grupo) {
@@ -648,6 +692,8 @@ public class ManejadorJuego : MonoBehaviour {
 
         return orden;
     }
+
+    public enum TipoJugador { Anfitrion, Invitado }
 
     #endregion
 
