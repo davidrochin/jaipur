@@ -41,14 +41,14 @@ public class Grupo : MonoBehaviour {
             int indiceEnMazo = 0;
 
             //Iterar por cada GameObject hijo
-            foreach (GameObject hijo in hijos) {
+            foreach (Carta carta in hijosCarta) {
                 //Calcular cual debe de ser su posicion en el mazo
-                Vector3 posicionEnMazo = ObtenerPosicionEnMazo(indiceEnMazo);
+                Vector3 posicionEnMazo = ObtenerPosicionEnMazo(carta.transform.GetSiblingIndex());
 
                 //Moverlo suavemente hasta su posicion designada
-                hijo.transform.position = Vector3.Lerp(hijo.transform.position, posicionEnMazo, 3f * Time.deltaTime);
+                carta.transform.position = Vector3.Lerp(carta.transform.position, posicionEnMazo, 3f * Time.deltaTime);
                 //hijo.transform.rotation = Quaternion.Lerp(hijo.transform.rotation, ObtenerRotacionEnMazo(), 6f * Time.deltaTime);
-                hijo.transform.rotation = Quaternion.RotateTowards(hijo.transform.rotation, ObtenerRotacionEnMazo(indiceEnMazo), 400f * Time.deltaTime);
+                carta.transform.rotation = Quaternion.RotateTowards(carta.transform.rotation, ObtenerRotacionEnMazo(indiceEnMazo), 400f * Time.deltaTime);
 
                 indiceEnMazo++;
             }
@@ -206,7 +206,7 @@ public class Grupo : MonoBehaviour {
         Carta[] todasCartas = FindObjectsOfType<Carta>();
 
         //Sacar a todos los hijos del transform
-        foreach (Carta carta in hijosCarta) {
+        foreach (Carta carta in todasCartas) {
             carta.transform.SetParent(null);
         }
 
@@ -216,11 +216,22 @@ public class Grupo : MonoBehaviour {
             foreach (Carta carta in todasCartas) {
                 if (carta.id == idActual) {
                     carta.transform.SetParent(transform);
+                    carta.transform.SetSiblingIndex(x);
                 }
             }
         }
 
+        OnTransformChildrenChanged();
+
         autoActualizarHijos = true;
+    }
+
+    public int[] ObtenerOrdenPorId() {
+        List<int> orden = new List<int>();
+        foreach (Transform hijo in transform) {
+            orden.Add(hijo.GetComponent<Carta>().id);
+        }
+        return orden.ToArray();
     }
 
     public void OrdenarPorTipo() {
@@ -252,12 +263,22 @@ public class Grupo : MonoBehaviour {
 
     public GameObject[] ObtenerCamellos(int cantidad) {
         List<GameObject> camellos = new List<GameObject>();
-        foreach (GameObject carta in hijos) {
+        /*foreach (GameObject carta in hijos) {
             if (carta.GetComponent<Carta>().mercancia == Carta.TipoMercancia.Camello) {
                 camellos.Add(carta);
             }
 
             if (camellos.Count >= cantidad) {
+                return camellos.ToArray();
+            }
+        }*/
+
+        for (int x = transform.childCount - 1; x >= 0; x--) {
+            if (transform.GetChild(x).GetComponent<Carta>().mercancia == Carta.TipoMercancia.Camello) {
+                camellos.Add(transform.GetChild(x).gameObject);
+            }
+
+            if(camellos.Count >= cantidad) {
                 return camellos.ToArray();
             }
         }

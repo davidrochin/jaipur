@@ -15,6 +15,10 @@ public class ManejadorRed : MonoBehaviour {
     Servidor servidor;
     Cliente cliente;
 
+    private void Awake() {
+        DontDestroyOnLoad(gameObject);
+    }
+
     public void ConfigurarComoHost() {
         servidor = Instantiate(prefabServidor).GetComponent<Servidor>();
         cliente = Instantiate(prefabCliente).GetComponent<Cliente>();

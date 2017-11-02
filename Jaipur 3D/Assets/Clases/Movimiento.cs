@@ -11,6 +11,23 @@ public class Movimiento : MessageBase {
     public TipoMovimiento tipoMovimiento;
 
     public enum TipoMovimiento { Ninguno, Tomar, Vender, Trueque, OrdenMazoPrincipal }
+
+    public override string ToString() {
+        string cadena = "" + tipoMovimiento;
+        foreach (int id in ids) {
+            cadena = cadena + ", " + id;
+        }
+        return cadena;
+    }
+
+    public bool SeEncuentraId(int id) {
+        foreach (int actual in ids) {
+            if(actual == id) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 public class MensajeString : MessageBase {
@@ -21,5 +38,5 @@ public class MensajeString : MessageBase {
 public class MensajeAccion : MessageBase {
     public static short TIPO = 102;
     public TipoAccion tipoAccion;
-    public enum TipoAccion { IniciarJuego, AcabarRonda, AcabarJuego }
+    public enum TipoAccion { IniciarJuego, IniciarRonda, AcabarRonda, AcabarJuego }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class ManejadorJuego : MonoBehaviour {
 
@@ -40,6 +41,11 @@ public class ManejadorJuego : MonoBehaviour {
         //Obtener el cliete y servidor
         cliente = FindObjectOfType<Cliente>();
         servidor = FindObjectOfType<Servidor>();
+        networkManager = FindObjectOfType<NetworkManager>();
+
+        //Entrar al cliente y darle la referencia de este ManejadorJuego
+        if(cliente != null) { cliente.manejadorJuego = this; }
+        
     }
 
     void Start() {
@@ -54,12 +60,14 @@ public class ManejadorJuego : MonoBehaviour {
     #region Inicial
 
     public void AgregarCamellosIniciales() {
+        Debug.Log("[ManejadorJuego]: Agregando camellos iniciales.");
         foreach (GameObject camello in mazoPrincipal.ObtenerCamellos(3)) {
             camello.transform.SetParent(mazoMercado.transform);
         }
     }
 
     public void LlenarMercado() {
+        Debug.Log("[ManejadorJuego]: Llenando mercado.");
         int necesarias = 5 - mazoMercado.hijos.Length;
         for (int x = 0; x < necesarias; x++) {
             GameObject carta = mazoPrincipal.ObtenerUltimaCarta();
@@ -69,6 +77,7 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     public void RepartirAJugadores() {
+        Debug.Log("[ManejadorJuego]: Repartiendo a jugadores.");
 
         //Repartir al jugador
         foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
@@ -267,6 +276,9 @@ public class ManejadorJuego : MonoBehaviour {
 
     public void TomarUna() {
 
+        //Lista para mandar las cartas movidas
+        List<int> cartasMovidas = new List<int>();
+
         //Revisar si son solo camellos
         bool sonSoloCamellos = true;
         foreach (Carta carta in cartasSeleccionadas) {
@@ -314,6 +326,10 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Generar el objeto tipo Movimiento que se va a enviar
+        Movimiento mov = new Movimiento();
+        mov.ids = cartasMovidas.ToArray();
+        mov.tipoMovimiento = Movimiento.TipoMovimiento.Tomar;
+        cliente.EnviarMovimiento(mov);
         //movimiento = new Movimiento(Movimiento.TipoMovimiento.Tomar, cartasMovidas.ToArray());
 
         LimpiarSeleccion();
@@ -456,36 +472,36 @@ public class ManejadorJuego : MonoBehaviour {
 
     IEnumerator Juego() {
         yield return new WaitForSeconds(1f);
-
-        //Si es PRUEBA
-        if (servidor == null && cliente == null) {
+       
+        if(servidor == null && cliente == null) {
             mazoPrincipal.RevolverCartas();
         }
 
         //Si es ANFITRIÓN
-        else if(servidor != null) {
+        if (servidor != null) {
+            Debug.Log("Soy Host");
             //Revolver las cartas
             mazoPrincipal.RevolverCartas();
 
-            //Mandar orden de las cartas al otro cliente
-            //Movimiento movOrden = new Movimiento(Movimiento.TipoMovimiento.OrdenMazoPrincipal, GetOrdenGrupo(mazoPrincipal));
-            //cliente.EnviarMovimiento(movOrden);
-        } 
-        
-        //Si es CLIENTE
-        else {
-            /*while (cliente.SolicitarOrdenGrupoPrincipal() == null) {
-                yield return new WaitForEndOfFrame();
-            }*/
-            //mazoPrincipal.OrdenarCartasPorId(cliente.SolicitarOrdenGrupoPrincipal());
+            yield return new WaitForEndOfFrame();
 
+            //Mandar orden de las cartas al otro cliente
+            Movimiento mov = new Movimiento();
+            mov.tipoMovimiento = Movimiento.TipoMovimiento.OrdenMazoPrincipal;
+            mov.ids = mazoPrincipal.ObtenerOrdenPorId();
+            cliente.EnviarMovimiento(mov);
+        }
+
+        //Si es solo CLIENTE
+        if (servidor == null) {
+            yield return new WaitUntil(() => cartasBarajeadas);
         }
 
         //Agregar los 3 camellos iniciales y llenar el mercado de cartas
         AgregarCamellosIniciales();
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(LlenarMercadoAnimado());
-        StartCoroutine(OrdenarFichasAnimado());
+        //StartCoroutine(OrdenarFichasAnimado());
         yield return new WaitForSeconds(1f);
 
         //Repartir sus 5 cartas a los jugadores
@@ -499,7 +515,7 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     IEnumerator RepartirAJugadoresAnimado() {
-
+        Debug.Log("[ManejadorJuego]: Repartiendo a jugadores.");
         ocupado = true;
 
         //Repartir al jugador
@@ -520,8 +536,10 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     IEnumerator LlenarMercadoAnimado() {
+        Debug.Log("[ManejadorJuego]: Llenando mercado.");
         int necesarias = 5 - mazoMercado.hijos.Length;
         for (int x = 0; x < necesarias; x++) {
+            Debug.Log("Mandando carta #" + mazoPrincipal.ObtenerUltimaCarta().GetComponent<Carta>().id + " al mercado.");
             mazoPrincipal.ObtenerUltimaCarta().transform.SetParent(mazoMercado.gameObject.transform);
             yield return new WaitForSeconds(TIEMPO_ENTRE_CARTA_ANIMADA);
         }
@@ -571,15 +589,53 @@ public class ManejadorJuego : MonoBehaviour {
 
     Cliente cliente;
     Servidor servidor;
+    NetworkManager networkManager;
+
     Movimiento movimiento;
     List<int> cartasMovidas = new List<int>();
 
+    bool cartasBarajeadas = false;
+
     public void EjecutarMovimientoOponente(Movimiento movimiento) {
+
+        //Imprimir el movimiento en consola
+        Debug.Log(movimiento);
+
+        //Obtener todas las cartas del juego
+        Carta[] todasCartas = ObtenerTodasLasCartas();
+
+        switch (movimiento.tipoMovimiento) {
+            case Movimiento.TipoMovimiento.OrdenMazoPrincipal:
+                mazoPrincipal.OrdenarCartasPorId(movimiento.ids);
+                cartasBarajeadas = true;
+                break;
+            case Movimiento.TipoMovimiento.Tomar:
+                foreach (Carta carta in todasCartas) {
+                    //Ver si la carta se movió
+                    if (movimiento.SeEncuentraId(carta.id)) {
+                        //Mandarla a su mazo correspondiente
+                        if (carta.mercancia == Carta.TipoMercancia.Camello) {
+                            carta.transform.SetParent(mazoOponenteCamellos.transform);
+                        } else {
+                            carta.transform.SetParent(mazoOponente.transform);
+                        }
+                    }
+                    
+                }
+                break;
+            case Movimiento.TipoMovimiento.Vender:
+
+                break;
+            case Movimiento.TipoMovimiento.Trueque:
+
+                break;
+        }
+
         turnoJugador = false;
     }
 
     public void MandarMovimientoJugador(Movimiento movimiento) {
-        //cliente.EnviarMovimiento(movimiento);
+        cliente.EnviarMovimiento(movimiento);
         cartasMovidas.Clear();
     }
 
