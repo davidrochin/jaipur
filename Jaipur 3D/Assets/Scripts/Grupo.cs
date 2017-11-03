@@ -92,17 +92,26 @@ public class Grupo : MonoBehaviour {
 
         //En caso de que se necesiten acomodar verticalmente
         if (tipoAcomodo == TipoAcomodo.Vertical) {
-            return new Vector3(transform.position.x, transform.position.y + (separacionVertical * indiceEnMazo), transform.position.z);
+            return new Vector3(
+                transform.position.x, 
+                transform.position.y + (separacionVertical * indiceEnMazo), 
+                transform.position.z);
         }
 
         //En caso de que se necesiten acomodar lateralmente
         else if (tipoAcomodo == TipoAcomodo.Lateral) {
-            return new Vector3(transform.position.x + indiceEnMazo * inversorDireccion, transform.position.y, transform.position.z + offsetSeleccion);
+            return new Vector3(
+                transform.position.x + indiceEnMazo * inversorDireccion, 
+                transform.position.y, 
+                transform.position.z + offsetSeleccion);
         }
 
         //En caso de que se necesiten acomodar lateralmente, encimadas
         else if (tipoAcomodo == TipoAcomodo.LateralEncimado) {
-            return new Vector3(transform.position.x + (indiceEnMazo * separacionLateral) * inversorDireccion, transform.position.y + (indiceEnMazo * separacionVertical), transform.position.z + offsetSeleccion);
+            return new Vector3(
+                transform.position.x + (indiceEnMazo * separacionLateral) * inversorDireccion, 
+                transform.position.y + (indiceEnMazo * separacionVertical), 
+                transform.position.z + offsetSeleccion);
         }
 
         return transform.position;
