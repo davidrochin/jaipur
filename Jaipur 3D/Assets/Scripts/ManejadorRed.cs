@@ -27,7 +27,7 @@ public class ManejadorRed : MonoBehaviour {
 
     public void ConfigurarComoCliente() {
         cliente = Instantiate(prefabCliente).GetComponent<Cliente>();
-        cliente.Arrancar("localhost", int.Parse(textoPuerto.text));
+        cliente.Arrancar(textoIp.text, int.Parse(textoPuerto.text));
     }
     
 }

@@ -22,6 +22,7 @@ public class Cliente : MonoBehaviour
         cliente.RegisterHandler(MensajeString.TIPO, ImprimirEnConsola);
         cliente.RegisterHandler(MensajeAccion.TIPO, EjecutarAccion);
         cliente.RegisterHandler(Movimiento.TIPO, EjecutarMovimiento);
+        Debug.Log("Tratando de conectarse a " + ip + " en el puerto " + puerto);
         cliente.Connect(ip, puerto);
     }
 

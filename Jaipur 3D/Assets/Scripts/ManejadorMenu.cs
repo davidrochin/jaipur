@@ -5,62 +5,51 @@ using UnityEngine.UI;
 using System;
 using UnityEngine.SceneManagement;
 
-public class ManejadorMenu : MonoBehaviour
-{
+public class ManejadorMenu : MonoBehaviour {
 
-    public static ManejadorMenu Instance { set; get; }
+    public static ManejadorMenu instancia;
 
     public GameObject menuPrincipal;
     public GameObject menuCrear;
     public GameObject menuUnirse;
 
-    public GameObject servidorPrefab;
-    public GameObject clientePrefab;
+    void Awake() {
+        //Destruirse si ya hay un ManejadorMenu
+        if (instancia == null) {
+            instancia = this;
+        } else if (instancia != null && instancia != this) {
+            Destroy(gameObject);
+        }
 
-    void Start()
-    {
-        Instance = this;
         DontDestroyOnLoad(gameObject);
 
         OcultarTodos();
         menuPrincipal.SetActive(true);
     }
 
-    void Update()
-    {
+    void Update() {
 
     }
 
-    public void MostrarMenuPrincipal(bool valor)
-    {
+    public void MostrarMenuPrincipal(bool valor) {
         OcultarTodos();
         menuPrincipal.SetActive(valor);
     }
 
-    public void MostrarMenuCrear(bool valor)
-    {
+    public void MostrarMenuCrear(bool valor) {
         OcultarTodos();
         menuCrear.SetActive(valor);
     }
 
-    public void MostrarMenuUnirse(bool valor)
-    {
+    public void MostrarMenuUnirse(bool valor) {
         OcultarTodos();
         menuUnirse.SetActive(valor);
     }
 
-    void OcultarTodos()
-    {
+    void OcultarTodos() {
         menuPrincipal.SetActive(false);
         menuUnirse.SetActive(false);
         menuCrear.SetActive(false);
-    }
-
-    public void IniciarJuego()
-    {
-        // Cargamos la escena del juego
-        // SceneManager.LoadScene("juego");
-        SceneManager.LoadScene("prueba");
     }
 
 }
