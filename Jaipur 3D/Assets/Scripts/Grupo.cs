@@ -366,6 +366,14 @@ public class Grupo : MonoBehaviour {
         return fichas.ToArray();
     }
 
+    public int ContarFichas() {
+        int contador = 0;
+        foreach (Ficha ficha in gameObject.GetComponentsInChildren<Ficha>()) {
+            contador = contador + ficha.valorFicha;
+        }
+        return contador;
+    }
+
     #endregion
 
     public int ObtenerCantidadDeHijos() {

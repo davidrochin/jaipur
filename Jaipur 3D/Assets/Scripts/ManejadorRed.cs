@@ -45,7 +45,8 @@ public class ManejadorRed : MonoBehaviour {
         }
     }
     
-    public void CerrarTodo() {
+    public void CerrarTodo(bool cargarMenu) {
+        Debug.Log("qiuvole vergas");
         Cliente[] clientes = FindObjectsOfType<Cliente>();
         Servidor[] servidores = FindObjectsOfType<Servidor>();
         if(clientes != null) {
@@ -57,5 +58,7 @@ public class ManejadorRed : MonoBehaviour {
 
         NetworkServer.Shutdown();
         NetworkClient.ShutdownAll();
+
+        if (cargarMenu) { UnityEngine.SceneManagement.SceneManager.LoadScene("menu"); }
     }
 }

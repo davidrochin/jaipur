@@ -12,19 +12,12 @@ public class ManejadorMenu : MonoBehaviour {
     public GameObject menuPrincipal;
     public GameObject menuCrear;
     public GameObject menuUnirse;
+    public GameObject menuPausa;
 
     void Awake() {
-        //Destruirse si ya hay un ManejadorMenu
-        if (instancia == null) {
-            instancia = this;
-        } else if (instancia != null && instancia != this) {
-            Destroy(gameObject);
-        }
-
-        DontDestroyOnLoad(gameObject);
-
         OcultarTodos();
-        menuPrincipal.SetActive(true);
+
+        if (menuPrincipal != null) { menuPrincipal.SetActive(true); }
     }
 
     void Update() {
@@ -46,10 +39,23 @@ public class ManejadorMenu : MonoBehaviour {
         menuUnirse.SetActive(valor);
     }
 
+    public void MostrarMenuPausa(bool valor) {
+        menuPausa.SetActive(valor);
+    }
+
     void OcultarTodos() {
-        menuPrincipal.SetActive(false);
-        menuUnirse.SetActive(false);
-        menuCrear.SetActive(false);
+        if (menuPrincipal != null) { menuPrincipal.SetActive(false);  }
+        if (menuUnirse != null) { menuUnirse.SetActive(false); }
+        if (menuCrear != null) { menuCrear.SetActive(false); }
+        if (menuPausa != null) { menuPausa.SetActive(false); }
+    }
+
+    public void CargarEscena(string nombre) {
+        SceneManager.LoadScene(nombre);
+    }
+
+    public void SalirDeLaAplicacion() {
+        Application.Quit();
     }
 
 }

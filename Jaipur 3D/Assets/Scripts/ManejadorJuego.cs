@@ -57,6 +57,9 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     void Start() {
+
+        ActualizarContadorFichas();
+
         //Iniciar el juego
         StartCoroutine(Juego());
     }
@@ -407,6 +410,29 @@ public class ManejadorJuego : MonoBehaviour {
         panelJuego.SetActive(estado);
     }
 
+    void ActualizarContadorFichas() {
+        //GameObject.FindGameObjectWithTag("Texto Fichas").GetComponent<UnityEngine.UI.Text>().text = "" + fichasJugador.ContarFichas();
+        GameObject.FindGameObjectWithTag("Texto Fichas").GetComponent<UnityEngine.UI.Text>().text = "" + jugador.fichas;
+    }
+
+    public void ImprimirPanelMensaje(string texto) {
+        GameObject.FindGameObjectWithTag("Mensaje Panel").GetComponent<UnityEngine.UI.Text>().text = texto;
+    }
+
+    public void ActualizarMensajeTurno() {
+        UnityEngine.UI.Text texto = GameObject.FindGameObjectWithTag("Mensaje Turno").GetComponent<UnityEngine.UI.Text>();
+
+        if (turnoJugador) {
+            texto.text = "Es tu turno";
+        } else {
+            texto.text = "Es el turno de tu oponente";
+        }
+    }
+
+    public void CerrarJuego() {
+        FindObjectOfType<ManejadorRed>().CerrarTodo(true);
+    }
+
     #endregion
 
     #region Corrutinas
@@ -644,6 +670,7 @@ public class ManejadorJuego : MonoBehaviour {
     public void TerminarTurno() {
         turnoJugador = false;
         ActualizarMensajeTurno();
+        ActualizarContadorFichas();
     }
 
     public void EmpezarTurno() {
@@ -651,7 +678,7 @@ public class ManejadorJuego : MonoBehaviour {
         ActualizarMensajeTurno();
     }
 
-    public enum TipoJugador { Anfitrion, Invitado }
+    public enum TipoJugador { Anfitrion, Invitado, Prueba }
 
     #endregion
 
@@ -692,20 +719,6 @@ public class ManejadorJuego : MonoBehaviour {
             }
         }
         return null;
-    }
-
-    public void ImprimirPanelMensaje(string texto) {
-        GameObject.FindGameObjectWithTag("Mensaje Panel").GetComponent<UnityEngine.UI.Text>().text = texto;
-    }
-
-    public void ActualizarMensajeTurno() {
-        UnityEngine.UI.Text texto = GameObject.FindGameObjectWithTag("Mensaje Turno").GetComponent<UnityEngine.UI.Text>();
-
-        if (turnoJugador) {
-            texto.text = "Es tu turno";
-        } else {
-            texto.text = "Es el turno de tu oponente";
-        }
     }
 
     #endregion

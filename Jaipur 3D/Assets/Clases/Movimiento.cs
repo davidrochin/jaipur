@@ -38,5 +38,5 @@ public class MensajeString : MessageBase {
 public class MensajeAccion : MessageBase {
     public static short TIPO = 102;
     public TipoAccion tipoAccion;
-    public enum TipoAccion { IniciarJuego, IniciarRonda, AcabarRonda, AcabarJuego }
+    public enum TipoAccion { IniciarJuego, IniciarRonda, AcabarRonda, AcabarJuego, Salir }
 }

@@ -9,6 +9,7 @@ TagManager:
   - Valor Ficha
   - Frente Ficha
   - Mensaje Turno
+  - Texto Fichas
   layers:
   - Default
   - TransparentFX
