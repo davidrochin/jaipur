@@ -23,21 +23,24 @@ public class ManejadorRed : MonoBehaviour {
     }
 
     public void ConfigurarComoHost() {
+
+        CerrarTodo();
+
         servidor = Instantiate(prefabServidor).GetComponent<Servidor>();
         cliente = Instantiate(prefabCliente).GetComponent<Cliente>();
 
-        if(textoIp != null && textoPuerto != null) {
-            cliente.Arrancar(textoIp.text, int.Parse(textoPuerto.text));
-        } else {
-            Debug.LogWarning("No se encontró el InputField de la IP y Puerto asi que se conectó a: localhost 8321.");
-            cliente.Arrancar("localhost", 8321);
-        }
-        
+        cliente.Arrancar("localhost", 8321);
+
     }
 
     public void ConfigurarComoCliente() {
+
+        CerrarTodo();
+
         cliente = Instantiate(prefabCliente).GetComponent<Cliente>();
         if (textoIp != null && textoPuerto != null) {
+            //Revisar que el InputField de la IP no esté vacio
+            if (textoIp.text.Trim().Equals("")) { textoIp.GetComponentInParent<InputField>().text = "localhost"; }
             cliente.Arrancar(textoIp.text, int.Parse(textoPuerto.text));
         } else {
             Debug.LogWarning("No se encontró el InputField de la IP y Puerto asi que se conectó a: localhost 8321.");
@@ -45,8 +48,7 @@ public class ManejadorRed : MonoBehaviour {
         }
     }
     
-    public void CerrarTodo(bool cargarMenu) {
-        Debug.Log("qiuvole vergas");
+    public void CerrarTodo() {
         Cliente[] clientes = FindObjectsOfType<Cliente>();
         Servidor[] servidores = FindObjectsOfType<Servidor>();
         if(clientes != null) {
@@ -58,7 +60,5 @@ public class ManejadorRed : MonoBehaviour {
 
         NetworkServer.Shutdown();
         NetworkClient.ShutdownAll();
-
-        if (cargarMenu) { UnityEngine.SceneManagement.SceneManager.LoadScene("menu"); }
     }
 }

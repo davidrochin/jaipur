@@ -25,17 +25,14 @@ public class ManejadorMenu : MonoBehaviour {
     }
 
     public void MostrarMenuPrincipal(bool valor) {
-        OcultarTodos();
         menuPrincipal.SetActive(valor);
     }
 
     public void MostrarMenuCrear(bool valor) {
-        OcultarTodos();
         menuCrear.SetActive(valor);
     }
 
     public void MostrarMenuUnirse(bool valor) {
-        OcultarTodos();
         menuUnirse.SetActive(valor);
     }
 
@@ -43,7 +40,7 @@ public class ManejadorMenu : MonoBehaviour {
         menuPausa.SetActive(valor);
     }
 
-    void OcultarTodos() {
+    public void OcultarTodos() {
         if (menuPrincipal != null) { menuPrincipal.SetActive(false);  }
         if (menuUnirse != null) { menuUnirse.SetActive(false); }
         if (menuCrear != null) { menuCrear.SetActive(false); }

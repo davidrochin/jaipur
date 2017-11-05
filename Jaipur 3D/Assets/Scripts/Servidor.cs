@@ -23,6 +23,9 @@ public class Servidor : MonoBehaviour {
 
         DontDestroyOnLoad(gameObject);
 
+        //Arrancar la corrutina que revisa si se desconectó algun jugador
+        StartCoroutine(RevisarDesconexiones());
+
         Debug.Log("Creando servidor...");
         CrearServidor();
     }
@@ -77,5 +80,18 @@ public class Servidor : MonoBehaviour {
         MensajeAccion msjAcc = new MensajeAccion();
         msjAcc.tipoAccion = accion;
         NetworkServer.SendToAll(MensajeAccion.TIPO, msjAcc);
+    }
+
+    IEnumerator RevisarDesconexiones() {
+
+        while (true) {
+            if (juegoIniciado && ObtenerNumeroConectados() < 2) {
+                Debug.LogWarning("Se ha desconectado un jugador.");
+                FindObjectOfType<ManejadorRed>().CerrarTodo();
+                FindObjectOfType<ManejadorMenu>().CargarEscena("menu");
+            }
+            yield return new WaitForSeconds(3f);
+        }
+        
     }
 }

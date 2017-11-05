@@ -255,7 +255,7 @@ public class Grupo : MonoBehaviour {
         return orden.ToArray();
     }
 
-    public void OrdenarPorTipo() {
+    public void OrdenarCartasPorTipo() {
         //Ordenarlas en un List
         List<GameObject> ordenadas = new List<GameObject>();
         Carta.TipoMercancia tipoActual = Carta.TipoMercancia.Cuero;

@@ -348,7 +348,7 @@ public class ManejadorJuego : MonoBehaviour {
     public void DarCartaAJugador(GameObject carta) {
         if (carta.GetComponent<Carta>().mercancia != Carta.TipoMercancia.Camello) {
             carta.transform.SetParent(mazoJugador.transform);
-            mazoJugador.OrdenarPorTipo();
+            mazoJugador.OrdenarCartasPorTipo();
         } else {
             carta.transform.SetParent(mazoJugadorCamellos.transform);
         }
@@ -357,6 +357,7 @@ public class ManejadorJuego : MonoBehaviour {
     public void DarCartaAOponente(GameObject carta) {
         if (carta.GetComponent<Carta>().mercancia != Carta.TipoMercancia.Camello) {
             carta.transform.SetParent(mazoOponente.transform);
+            mazoOponente.OrdenarCartasPorTipo();
         } else {
             carta.transform.SetParent(mazoOponenteCamellos.transform);
         }
@@ -390,7 +391,10 @@ public class ManejadorJuego : MonoBehaviour {
         if (grupoFichasCorrecto.ObtenerCantidadDeHijos() > 0) {
             Ficha ficha = grupoFichasCorrecto.ObtenerUltimaFicha();
             ficha.EnviarAGrupo(grupoDestino);
-            jugador.AgregarFichas(ficha.valorFicha);
+            if(grupoDestino == fichasJugador) {
+                jugador.AgregarFichas(ficha.valorFicha);
+            }
+            
         } else {
             Debug.LogWarning("El jugador vendió una Carta pero no hay fichas para entregarle.");
         }
@@ -430,7 +434,8 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     public void CerrarJuego() {
-        FindObjectOfType<ManejadorRed>().CerrarTodo(true);
+        FindObjectOfType<ManejadorRed>().CerrarTodo();
+        FindObjectOfType<ManejadorMenu>().CargarEscena("menu");
     }
 
     #endregion
@@ -602,7 +607,7 @@ public class ManejadorJuego : MonoBehaviour {
     public void EjecutarMovimientoOponente(Movimiento movimiento) {
 
         //Imprimir el movimiento en consola
-        Debug.Log(movimiento);
+        Debug.Log("[ManejadorJuego] Movimiento del oponente recibido: " + movimiento);
 
         //Obtener todas las cartas del juego
         Carta[] todasCartas = ObtenerTodasLasCartas();
@@ -655,6 +660,7 @@ public class ManejadorJuego : MonoBehaviour {
         if(movimiento.tipoMovimiento != Movimiento.TipoMovimiento.OrdenMazoPrincipal) {
             EmpezarTurno();
         }
+
     }
 
     public int[] GetOrdenGrupo(Grupo grupo) {
