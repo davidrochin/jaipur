@@ -23,11 +23,11 @@ public class Carta : MonoBehaviour {
             //Revisar si se necesita De-seleccionar o Seleccionar
             if (seleccionada) {
                 //De-seleccionar
-                FindObjectOfType<ManejadorJuego>().RemoverDeSeleccion(gameObject, true);
+                FindObjectOfType<Seleccion>().RemoverDeSeleccion(gameObject, true);
                 SetSeleccionada(false);
             } else if (!seleccionada) {
                 //Seleccionar
-                if (FindObjectOfType<ManejadorJuego>().AgregarASeleccion(gameObject, true)) {
+                if (FindObjectOfType<Seleccion>().AgregarASeleccion(gameObject, true)) {
                     SetSeleccionada(true);
                 }
             }

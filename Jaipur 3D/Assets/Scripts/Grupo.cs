@@ -41,14 +41,14 @@ public class Grupo : MonoBehaviour {
             int indiceEnMazo = 0;
 
             //Iterar por cada GameObject hijo
-            foreach (Carta carta in hijosCarta) {
+            foreach (GameObject obj in hijos) {
                 //Calcular cual debe de ser su posicion en el mazo
-                Vector3 posicionEnMazo = ObtenerPosicionEnMazo(carta.transform.GetSiblingIndex());
+                Vector3 posicionEnMazo = ObtenerPosicionEnMazo(obj.transform.GetSiblingIndex());
 
                 //Moverlo suavemente hasta su posicion designada
-                carta.transform.position = Vector3.Lerp(carta.transform.position, posicionEnMazo, 3f * Time.deltaTime);
+                obj.transform.position = Vector3.Lerp(obj.transform.position, posicionEnMazo, 3f * Time.deltaTime);
                 //hijo.transform.rotation = Quaternion.Lerp(hijo.transform.rotation, ObtenerRotacionEnMazo(), 6f * Time.deltaTime);
-                carta.transform.rotation = Quaternion.RotateTowards(carta.transform.rotation, ObtenerRotacionEnMazo(indiceEnMazo), 400f * Time.deltaTime);
+                obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, ObtenerRotacionEnMazo(indiceEnMazo), 400f * Time.deltaTime);
 
                 indiceEnMazo++;
             }
@@ -69,6 +69,10 @@ public class Grupo : MonoBehaviour {
                     hijosCarta[x] = hijos[x].GetComponent<Carta>();
                     hijosCarta[x].grupo = GetComponent<Grupo>();
                 }
+            }
+
+            if (tipoGrupo == TipoGrupo.Fichas) {
+                //OrdenarFichasPorValor();
             }
         }
     }
@@ -108,10 +112,18 @@ public class Grupo : MonoBehaviour {
 
         //En caso de que se necesiten acomodar lateralmente, encimadas
         else if (tipoAcomodo == TipoAcomodo.LateralEncimado) {
-            return new Vector3(
-                transform.position.x + (indiceEnMazo * separacionLateral) * inversorDireccion, 
-                transform.position.y + (indiceEnMazo * separacionVertical), 
-                transform.position.z + offsetSeleccion);
+            if(tipoGrupo == TipoGrupo.Cartas) {
+                return new Vector3(
+                    transform.position.x + (indiceEnMazo * separacionLateral) * inversorDireccion,
+                    transform.position.y + (indiceEnMazo * separacionVertical),
+                    transform.position.z + offsetSeleccion);
+            } else if (tipoGrupo == TipoGrupo.Fichas) {
+                return new Vector3(
+                    transform.position.x + (indiceEnMazo * separacionLateral) * inversorDireccion,
+                    transform.position.y,
+                    transform.position.z + offsetSeleccion);
+            }
+            
         }
 
         return transform.position;
@@ -143,12 +155,12 @@ public class Grupo : MonoBehaviour {
                 separacionLateral = 0.3f;
             }
         } else if (tipoGrupo == TipoGrupo.Fichas) {
-            separacionVertical = 0f;
+            separacionVertical = 0.04f;
             separacionLateral = 0.2f;
         }
     }
 
-    #region Acciones
+    #region Cartas
 
     public GameObject[] ObtenerUltimasCartas(int cantidad) {
         if (hijos.Length >= cantidad) {
@@ -295,6 +307,70 @@ public class Grupo : MonoBehaviour {
     }
 
     #endregion
+
+    #region Fichas
+
+    public Ficha ObtenerUltimaFicha() {
+        if (tipoGrupo != TipoGrupo.Fichas) { Debug.LogError("Se trató de obtener una Ficha de un Grupo que guarda Cartas"); return null; }
+        return transform.GetChild(transform.childCount - 1).GetComponent<Ficha>();
+    }
+
+    void OrdenarFichasPorValor() {
+        autoActualizarHijos = false;
+
+        int[] ordenIdeal = new int[transform.childCount];
+
+        int cuenta = 0;
+        foreach (Transform hijo in transform) {
+            Ficha fichaHijo = hijo.GetComponent<Ficha>();
+            ordenIdeal[cuenta] = fichaHijo.valorFicha;
+            cuenta++;
+        }
+
+        //Metodo de la burbuja
+        for (int x = 0; x < ordenIdeal.Length; x++) {
+            
+        }
+
+        string imprimir = "" + name + ": ";
+        foreach (int actual in ordenIdeal) {
+            imprimir = imprimir + ", " + actual;
+        }
+        Debug.Log(imprimir);
+
+        autoActualizarHijos = true;
+    }
+
+    public void InvertirOrdenFichas() {
+        autoActualizarHijos = false;
+
+        Ficha[] ordenActual = new Ficha[transform.childCount];
+        for (int x = 0; x < transform.childCount; x++) {
+            ordenActual[x] = transform.GetChild(x).GetComponent<Ficha>();
+            transform.GetChild(x).SetParent(null);
+        }
+
+        for (int x = transform.childCount; x >= 0; x--) {
+            ordenActual[x].transform.SetParent(transform);
+            ordenActual[x].transform.SetAsLastSibling();
+        }
+
+        autoActualizarHijos = true;
+    }
+
+    public Ficha[] ObtenerFichas() {
+        List<Ficha> fichas = new List<Ficha>();
+        for (int x = 0; x < transform.childCount; x++) {
+            fichas.Add(transform.GetChild(x).GetComponent<Ficha>());
+        }
+        return fichas.ToArray();
+    }
+
+    #endregion
+
+    public int ObtenerCantidadDeHijos() {
+        return transform.childCount;
+    }
 
     private void OnDrawGizmos() {
         Gizmos.color = Color.red;

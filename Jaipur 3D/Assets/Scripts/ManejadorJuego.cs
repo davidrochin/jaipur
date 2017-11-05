@@ -15,14 +15,15 @@ public class ManejadorJuego : MonoBehaviour {
 
     [Header("Fichas")]
     public Grupo fichasPrincipal;
-    public Grupo fichasDiamante, fichasOro, fichasPlata, fichasTela, fichasEspecias, fichasCuero;
+    public Grupo fichasDiamante, fichasOro, fichasPlata, fichasTela, fichasEspecias, fichasCuero, fichasJugador, fichasOponente;
 
     [Header("Interfaz")]
-    public GameObject panelAcciones;
+    public GameObject panelJuego;
 
     [Header("Selección")]
-    public List<GameObject> objetosSeleccionados;
-    List<Carta> cartasSeleccionadas;
+    Seleccion seleccion;
+
+    Jugador jugador;
 
     //Esta variable es la que prevee que el juego siga avanzando si se está ejecutando alguna animación, o algo por el estilo.
     private bool ocupado = false;
@@ -30,13 +31,13 @@ public class ManejadorJuego : MonoBehaviour {
     private const float TIEMPO_ENTRE_CARTA_ANIMADA = 0.3f;
 
     void Awake() {
-        //Inicializar el List
-        objetosSeleccionados = new List<GameObject>();
-        cartasSeleccionadas = new List<Carta>();
+
+        //Buscar el componente Seleccion
+        seleccion = FindObjectOfType<Seleccion>();
 
         //Inicializar elementos de la interfaz
-        if (panelAcciones == null) { panelAcciones = GameObject.Find("panel_acciones"); }
-        EstadoPanelAcciones(false);
+        if (panelJuego == null) { panelJuego = GameObject.Find("panel_acciones"); }
+        EstadoPanel(false);
 
         //Obtener el cliete y servidor
         cliente = FindObjectOfType<Cliente>();
@@ -48,16 +49,16 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Determinar que tipo de jugador es este
         DeterminarTipoJugador();
+        DeterminarTurno();
+
+        //Obtener el Jugador
+        jugador = FindObjectOfType<Jugador>();
         
     }
 
     void Start() {
         //Iniciar el juego
         StartCoroutine(Juego());
-    }
-
-    void Update() {
-
     }
 
     #region Inicial
@@ -84,192 +85,46 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Repartir al jugador
         foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
-            DarAJugador(x);
+            DarCartaAJugador(x);
         }
 
         //Repartir al oponente
         foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
-            DarAOponente(x);
+            DarCartaAOponente(x);
         }
 
     }
 
     public void OrdenarFichas() {
 
-        List<Transform> temp = new List<Transform>();
+        //Ficha[] todasFichas = ObtenerTodasLasFichas();
+        Ficha[] todasFichas = fichasPrincipal.ObtenerFichas();
 
-        foreach (Transform hijo in fichasPrincipal.transform) {
-            temp.Add(hijo);
-        }
-
-        foreach (Transform hijo in temp) {
-
-            Ficha ficha = hijo.GetComponent<Ficha>();
+        foreach (Ficha ficha in todasFichas) {
+            Grupo grupoDestino = fichasCuero;
 
             switch (ficha.tipoFicha) {
                 case Ficha.TipoFicha.Diamante:
-                    ficha.transform.SetParent(fichasDiamante.transform);
+                    grupoDestino = fichasDiamante;
                     break;
                 case Ficha.TipoFicha.Oro:
-                    ficha.transform.SetParent(fichasOro.transform);
+                    grupoDestino = fichasOro;
                     break;
                 case Ficha.TipoFicha.Plata:
-                    ficha.transform.SetParent(fichasPlata.transform);
+                    grupoDestino = fichasPlata;
                     break;
                 case Ficha.TipoFicha.Tela:
-                    ficha.transform.SetParent(fichasTela.transform);
+                    grupoDestino = fichasTela;
                     break;
                 case Ficha.TipoFicha.Especias:
-                    ficha.transform.SetParent(fichasEspecias.transform);
+                    grupoDestino = fichasEspecias;
                     break;
                 case Ficha.TipoFicha.Cuero:
-                    ficha.transform.SetParent(fichasCuero.transform);
+                    grupoDestino = fichasCuero;
                     break;
             }
-        }
-    }
 
-    public void DarAJugador(GameObject carta) {
-        if (carta.GetComponent<Carta>().mercancia != Carta.TipoMercancia.Camello) {
-            carta.transform.SetParent(mazoJugador.transform);
-            mazoJugador.OrdenarPorTipo();
-        } else {
-            carta.transform.SetParent(mazoJugadorCamellos.transform);
-        }
-    }
-
-    public void DarAOponente(GameObject carta) {
-        if (carta.GetComponent<Carta>().mercancia != Carta.TipoMercancia.Camello) {
-            carta.transform.SetParent(mazoOponente.transform);
-        } else {
-            carta.transform.SetParent(mazoOponenteCamellos.transform);
-        }
-    }
-
-    #endregion
-
-    #region Selección
-
-    public void ChecarSeleccion() {
-        //Checar si se seleccionó un camello del mercado
-        /*foreach (Carta carta in cartasSeleccionadas) {
-            Debug.Log(carta.tipoMaterial);
-            if(carta.mazo == mazoMercado && carta.tipoMaterial == Carta.MaterialCarta.Camello) {
-                Debug.Log("Limpiando seleccion");
-                LimpiarSeleccion();
-
-                //Seleccionar a todos los camellos del mercado
-                foreach (Carta x in mazoMercado.hijosCarta) {
-                    if (x.tipoMaterial == Carta.MaterialCarta.Camello) {
-                        Debug.Log("Agregando carta");
-                        AgregarASeleccion(x.gameObject, false);
-                        
-                    }
-                }
-                break;
-            }
-        }*/
-    }
-
-    public bool AgregarASeleccion(GameObject objeto, bool checarSeleccion) {
-        //Revisar si ya se seleccionaron las 10 cartas
-        if (objetosSeleccionados.Count < 10 && ocupado == false) {
-            Carta carta = objeto.GetComponent<Carta>();
-
-            //Revisar si se seleccionó algun camello del mercado
-            if (carta.mercancia == Carta.TipoMercancia.Camello && carta.grupo == mazoMercado && !seleccionadosTodosCamellosMercado) {
-                LimpiarSeleccion(mazoMercado);
-                SeleccionarCamellosMercado(true);
-                return true;
-            } else if (seleccionadosTodosCamellosMercado && carta.mercancia != Carta.TipoMercancia.Camello && carta.grupo == mazoMercado) {
-                SeleccionarCamellosMercado(false);
-            }
-
-            //Añadir la carta a la selección
-            objetosSeleccionados.Add(objeto);
-            carta.SetSeleccionada(true);
-            ActualizarReferenciasCartas();
-
-            if (checarSeleccion) { ChecarSeleccion(); }
-
-            return true;
-        } else {
-            //No añadirla y regresar false
-            return false;
-        }
-    }
-
-    public bool RemoverDeSeleccion(GameObject objeto, bool checarSeleccion) {
-
-        Carta carta = objeto.GetComponent<Carta>();
-
-        if (seleccionadosTodosCamellosMercado && carta.mercancia == Carta.TipoMercancia.Camello && carta.grupo == mazoMercado) {
-            SeleccionarCamellosMercado(false);
-            return true;
-        }
-
-        foreach (GameObject x in objetosSeleccionados) {
-            if (objeto == x) {
-                objetosSeleccionados.Remove(x);
-                carta.SetSeleccionada(false);
-                ActualizarReferenciasCartas();
-
-                if (checarSeleccion) { ChecarSeleccion(); }
-
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void LimpiarSeleccion() {
-        foreach (Carta carta in cartasSeleccionadas) {
-            carta.SetSeleccionada(false);
-        }
-        objetosSeleccionados.Clear();
-        ActualizarReferenciasCartas();
-        seleccionadosTodosCamellosMercado = false;
-    }
-
-    public void LimpiarSeleccion(Grupo mazo) {
-        foreach (Carta carta in cartasSeleccionadas) {
-            if (carta.grupo == mazo) {
-                carta.SetSeleccionada(false);
-            }
-        }
-        objetosSeleccionados.Clear();
-        ActualizarReferenciasCartas();
-    }
-
-    public void ActualizarReferenciasCartas() {
-        cartasSeleccionadas.Clear();
-
-        foreach (GameObject x in objetosSeleccionados) {
-            cartasSeleccionadas.Add(x.GetComponent<Carta>());
-        }
-    }
-
-    bool seleccionadosTodosCamellosMercado = false;
-
-    public void SeleccionarCamellosMercado(bool seleccion) {
-        foreach (Transform hijo in mazoMercado.transform) {
-
-            Carta carta = hijo.GetComponent<Carta>();
-
-            if (carta.mercancia == Carta.TipoMercancia.Camello) {
-
-                if (seleccion == true) {
-                    objetosSeleccionados.Add(carta.gameObject);
-                    carta.SetSeleccionada(true);
-                    seleccionadosTodosCamellosMercado = true;
-                } else {
-                    objetosSeleccionados.Remove(carta.gameObject);
-                    carta.SetSeleccionada(false);
-                    seleccionadosTodosCamellosMercado = false;
-                }
-
-                ActualizarReferenciasCartas();
-            }
+            ficha.EnviarAGrupo(grupoDestino);
         }
     }
 
@@ -279,12 +134,18 @@ public class ManejadorJuego : MonoBehaviour {
 
     public void TomarUna() {
 
+        //Revisar si es el turno del jugador
+        if (!turnoJugador) {
+            ImprimirPanelMensaje("¡Aún no es tu turno!");
+            return;
+        }
+
         //Lista para mandar las cartas movidas
         List<int> cartasMovidas = new List<int>();
 
         //Revisar si son solo camellos
         bool sonSoloCamellos = true;
-        foreach (Carta carta in cartasSeleccionadas) {
+        foreach (Carta carta in seleccion.cartasSeleccionadas) {
             if (carta.mercancia != Carta.TipoMercancia.Camello) {
                 sonSoloCamellos = false;
             }
@@ -292,25 +153,25 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Revisar que solo se haya seleccionado 1 carta si no son solo camellos
         if (sonSoloCamellos == false) {
-            if (cartasSeleccionadas.Count < 1) {
-                Debug.Log("Necesitas seleccionar al menos una carta.");
+            if (seleccion.cartasSeleccionadas.Count < 1) {
+                ImprimirPanelMensaje("Necesitas seleccionar al menos una carta.");
                 return;
-            } else if (cartasSeleccionadas.Count > 1) {
-                Debug.Log("No puedes tomar mas de una carta, al menos sean camellos.");
+            } else if (seleccion.cartasSeleccionadas.Count > 1) {
+                ImprimirPanelMensaje("No puedes tomar mas de una carta, al menos sean camellos.");
                 return;
             }
         }
 
         Debug.Log(mazoMercado);
         //Revisar si la carta es del mercado
-        if (cartasSeleccionadas[0].grupo != mazoMercado) {
-            Debug.Log("Solo puedes tomar cartas del mercado.");
+        if (seleccion.cartasSeleccionadas[0].grupo != mazoMercado) {
+            ImprimirPanelMensaje("Solo puedes tomar cartas del mercado.");
             return;
         }
 
         //Revisar que el jugador pueda aceptar las cartas
         int cantidadCartas = 0; int cantidadCamellos = 0;
-        foreach (Carta carta in cartasSeleccionadas) {
+        foreach (Carta carta in seleccion.cartasSeleccionadas) {
             if (carta.mercancia != Carta.TipoMercancia.Camello) {
                 cantidadCartas++;
             } else {
@@ -318,14 +179,14 @@ public class ManejadorJuego : MonoBehaviour {
             }
         }
         if (PuedeAceptar(cantidadCartas, cantidadCamellos) == false) {
-            Debug.Log("Solo puedes tener 7 cartas normales y 7 cartas de camello.");
+            ImprimirPanelMensaje("Solo puedes tener 7 cartas normales y 7 cartas de camello.");
             return;
         }
 
         //Todo está bien
-        foreach (GameObject objeto in objetosSeleccionados) {
+        foreach (GameObject objeto in seleccion.objetosSeleccionados) {
             cartasMovidas.Add(objeto.GetComponent<Carta>().id);
-            DarAJugador(objeto);
+            DarCartaAJugador(objeto);
         }
 
         //Generar el objeto tipo Movimiento que se va a enviar
@@ -335,46 +196,54 @@ public class ManejadorJuego : MonoBehaviour {
         cliente.EnviarMovimiento(mov);
         //movimiento = new Movimiento(Movimiento.TipoMovimiento.Tomar, cartasMovidas.ToArray());
 
-        LimpiarSeleccion();
+        seleccion.LimpiarSeleccion();
         LlenarMercado();
+        TerminarTurno();
     }
 
     public void Vender() {
+
+        //Revisar si es el turno del jugador
+        if (!turnoJugador) {
+            ImprimirPanelMensaje("¡Aún no es tu turno!");
+            return;
+        }
 
         //Lista para mandar las cartas movidas
         List<int> cartasMovidas = new List<int>();
 
         //Revisar que haya cartas seleccionadas
-        if (cartasSeleccionadas.Count < 1) {
-            Debug.Log("¡Necesitas seleccionar al menos una carta!");
+        if (seleccion.cartasSeleccionadas.Count < 1) {
+            ImprimirPanelMensaje("¡Necesitas seleccionar al menos una carta!");
             return;
         }
 
-        Carta.TipoMercancia primerMaterial = cartasSeleccionadas[0].mercancia;
-        foreach (Carta carta in cartasSeleccionadas) {
+        Carta.TipoMercancia primerMaterial = seleccion.cartasSeleccionadas[0].mercancia;
+        foreach (Carta carta in seleccion.cartasSeleccionadas) {
 
             //Revisar que las cartas no sean del mercado
             if (carta.grupo == mazoMercado) {
-                Debug.Log("¡No puedes vender cartas del mercado!");
+                ImprimirPanelMensaje("¡No puedes vender cartas del mercado!");
                 return;
             }
 
             //Revisar que no sean camellos
             if (carta.mercancia == Carta.TipoMercancia.Camello) {
-                Debug.Log("¡No puedes vender camellos!");
+                ImprimirPanelMensaje("¡No puedes vender camellos!");
                 return;
             }
 
             //Revisar que sean del mismo material
             if (carta.mercancia != primerMaterial) {
-                Debug.Log("¡No puedes vender cartas de diferente tipo de material!");
+                ImprimirPanelMensaje("¡No puedes vender cartas de diferente tipo de material!");
                 return;
             }
         }
 
         //Todo en orden. Vender las cartas
-        foreach (Carta carta in cartasSeleccionadas) {
+        foreach (Carta carta in seleccion.cartasSeleccionadas) {
             cartasMovidas.Add(carta.id);
+            DarFichaPorCarta(carta, fichasJugador);
             carta.transform.SetParent(mazoDescartar.transform);
         }
 
@@ -384,10 +253,17 @@ public class ManejadorJuego : MonoBehaviour {
         mov.tipoMovimiento = Movimiento.TipoMovimiento.Vender;
         cliente.EnviarMovimiento(mov);
 
-        LimpiarSeleccion();
+        seleccion.LimpiarSeleccion();
+        TerminarTurno();
     }
 
     public void Trueque() {
+
+        //Revisar si es el turno del jugador
+        if (!turnoJugador) {
+            ImprimirPanelMensaje("¡Aún no es tu turno!");
+            return;
+        }
 
         //Lista para mandar las cartas movidas
         List<int> cartasMovidas = new List<int>();
@@ -396,7 +272,7 @@ public class ManejadorJuego : MonoBehaviour {
         int cartasSelecionadasMercado = 0;
         int cartasSeleccionadasJugador = 0;
 
-        foreach (Carta carta in cartasSeleccionadas) {
+        foreach (Carta carta in seleccion.cartasSeleccionadas) {
             if (carta.grupo == mazoMercado) {
                 cartasSelecionadasMercado++;
             } else if (carta.grupo == mazoJugador || carta.grupo == mazoJugadorCamellos) {
@@ -413,7 +289,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Revisar que sean dos cambios minimo
-        if (cartasSeleccionadas.Count < 4) {
+        if (seleccion.cartasSeleccionadas.Count < 4) {
             Debug.Log("¡Solo puedes hacer 2 cambios o más!");
             return;
         }
@@ -422,7 +298,7 @@ public class ManejadorJuego : MonoBehaviour {
         List<Carta.TipoMercancia> materialesEnJugador = new List<Carta.TipoMercancia>();
         List<Carta.TipoMercancia> materialesEnMercado = new List<Carta.TipoMercancia>();
 
-        foreach (Carta carta in cartasSeleccionadas) {
+        foreach (Carta carta in seleccion.cartasSeleccionadas) {
             if (carta.grupo == mazoJugador || carta.grupo == mazoJugadorCamellos) {
                 materialesEnJugador.Add(carta.mercancia);
             } else if (carta.grupo == mazoMercado) {
@@ -440,13 +316,13 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Hacer el trueque
-        foreach (Carta carta in cartasSeleccionadas) {
+        foreach (Carta carta in seleccion.cartasSeleccionadas) {
 
             //Agregar la carta a la lista de cartas movidas para posteriormente mandarlas al otro cliente.
             cartasMovidas.Add(carta.id);
 
             if (carta.grupo == mazoMercado) {
-                DarAJugador(carta.gameObject);
+                DarCartaAJugador(carta.gameObject);
             } else if (carta.grupo == mazoJugador || carta.grupo == mazoJugadorCamellos) {
                 carta.transform.SetParent(mazoMercado.transform);
             }
@@ -458,18 +334,68 @@ public class ManejadorJuego : MonoBehaviour {
         mov.tipoMovimiento = Movimiento.TipoMovimiento.Trueque;
         cliente.EnviarMovimiento(mov);
 
-        LimpiarSeleccion();
+        seleccion.LimpiarSeleccion();
+        TerminarTurno();
     }
 
     #endregion
 
-    #region Chequeo
+    #region Acciones del Manejador
 
-    bool PuedeAceptar(int cartasNormales, int camellos) {
-        if (mazoJugador.transform.childCount + cartasNormales <= 7 && mazoJugadorCamellos.transform.childCount + camellos <= 7) {
-            return true;
+    public void DarCartaAJugador(GameObject carta) {
+        if (carta.GetComponent<Carta>().mercancia != Carta.TipoMercancia.Camello) {
+            carta.transform.SetParent(mazoJugador.transform);
+            mazoJugador.OrdenarPorTipo();
         } else {
-            return false;
+            carta.transform.SetParent(mazoJugadorCamellos.transform);
+        }
+    }
+
+    public void DarCartaAOponente(GameObject carta) {
+        if (carta.GetComponent<Carta>().mercancia != Carta.TipoMercancia.Camello) {
+            carta.transform.SetParent(mazoOponente.transform);
+        } else {
+            carta.transform.SetParent(mazoOponenteCamellos.transform);
+        }
+    }
+
+    public void DarFichaPorCarta(Carta cartaVendida, Grupo grupoDestino) {
+
+        Grupo grupoFichasCorrecto = fichasCuero;
+
+        switch (cartaVendida.mercancia) {
+            case Carta.TipoMercancia.Cuero:
+                grupoFichasCorrecto = fichasCuero;
+                break;
+            case Carta.TipoMercancia.Especias:
+                grupoFichasCorrecto = fichasEspecias;
+                break;
+            case Carta.TipoMercancia.Tela:
+                grupoFichasCorrecto = fichasTela;
+                break;
+            case Carta.TipoMercancia.Plata:
+                grupoFichasCorrecto = fichasPlata;
+                break;
+            case Carta.TipoMercancia.Oro:
+                grupoFichasCorrecto = fichasOro;
+                break;
+            case Carta.TipoMercancia.Diamante:
+                grupoFichasCorrecto = fichasDiamante;
+                break;
+        }
+
+        if (grupoFichasCorrecto.ObtenerCantidadDeHijos() > 0) {
+            Ficha ficha = grupoFichasCorrecto.ObtenerUltimaFicha();
+            ficha.EnviarAGrupo(grupoDestino);
+            jugador.AgregarFichas(ficha.valorFicha);
+        } else {
+            Debug.LogWarning("El jugador vendió una Carta pero no hay fichas para entregarle.");
+        }
+    }
+
+    public void DarFichasPorCartas(Carta[] cartasVendidas, Grupo grupoDestino) {
+        foreach (Carta carta in cartasVendidas) {
+            DarFichaPorCarta(carta, grupoDestino);
         }
     }
 
@@ -477,8 +403,8 @@ public class ManejadorJuego : MonoBehaviour {
 
     #region Interfaz
 
-    void EstadoPanelAcciones(bool estado) {
-        panelAcciones.SetActive(estado);
+    void EstadoPanel(bool estado) {
+        panelJuego.SetActive(estado);
     }
 
     #endregion
@@ -494,7 +420,6 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Si es ANFITRIÓN
         if (tipoJugador == TipoJugador.Anfitrion) {
-            Debug.Log("Soy Host");
             //Revolver las cartas
             mazoPrincipal.RevolverCartas();
 
@@ -517,6 +442,7 @@ public class ManejadorJuego : MonoBehaviour {
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(LlenarMercadoAnimado());
         //StartCoroutine(OrdenarFichasAnimado());
+        OrdenarFichas();
         yield return new WaitForSeconds(1f);
 
         //Repartir sus 5 cartas a los jugadores
@@ -524,21 +450,21 @@ public class ManejadorJuego : MonoBehaviour {
         yield return new WaitWhile(() => ocupado);
 
         Debug.Log("Listo!");
-        EstadoPanelAcciones(true);
+        EstadoPanel(true);
 
         yield return new WaitForEndOfFrame();
     }
 
     IEnumerator RepartirAJugadoresAnimado() {
-        Debug.Log("[ManejadorJuego]: Repartiendo a jugadores.");
+        //Debug.Log("[ManejadorJuego]: Repartiendo a jugadores.");
         ocupado = true;
 
         //Repartir al jugador
         foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
             if(tipoJugador == TipoJugador.Anfitrion) {
-                DarAJugador(x);
+                DarCartaAJugador(x);
             } else {
-                DarAOponente(x);
+                DarCartaAOponente(x);
             }
             
             yield return new WaitForSeconds(TIEMPO_ENTRE_CARTA_ANIMADA);
@@ -547,9 +473,9 @@ public class ManejadorJuego : MonoBehaviour {
         //Repartir al oponente
         foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
             if (tipoJugador == TipoJugador.Anfitrion) {
-                DarAOponente(x);
+                DarCartaAOponente(x);
             } else {
-                DarAJugador(x);
+                DarCartaAJugador(x);
             }
             
             yield return new WaitForSeconds(TIEMPO_ENTRE_CARTA_ANIMADA);
@@ -561,10 +487,10 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     IEnumerator LlenarMercadoAnimado() {
-        Debug.Log("[ManejadorJuego]: Llenando mercado.");
+        //Debug.Log("[ManejadorJuego]: Llenando mercado.");
         int necesarias = 5 - mazoMercado.hijos.Length;
         for (int x = 0; x < necesarias; x++) {
-            Debug.Log("Mandando carta #" + mazoPrincipal.ObtenerUltimaCarta().GetComponent<Carta>().id + " al mercado.");
+            //Debug.Log("Mandando carta #" + mazoPrincipal.ObtenerUltimaCarta().GetComponent<Carta>().id + " al mercado.");
             mazoPrincipal.ObtenerUltimaCarta().transform.SetParent(mazoMercado.gameObject.transform);
             yield return new WaitForSeconds(TIEMPO_ENTRE_CARTA_ANIMADA);
         }
@@ -622,10 +548,29 @@ public class ManejadorJuego : MonoBehaviour {
 
     public void DeterminarTipoJugador() {
         if(servidor != null) {
+            Debug.Log("Soy Host");
             tipoJugador = TipoJugador.Anfitrion;
         } else {
+            Debug.Log("Soy Invitado");
             tipoJugador = TipoJugador.Invitado;
         }
+    }
+
+    public void DeterminarTurno() {
+        if (tipoJugador == TipoJugador.Anfitrion) {
+            if (ronda == 1) {
+                turnoJugador = true;
+            } else {
+                turnoJugador = false;
+            }
+        } else if (tipoJugador == TipoJugador.Invitado) {
+            if (ronda == 1) {
+                turnoJugador = false;
+            } else {
+                turnoJugador = true;
+            }
+        }
+        ActualizarMensajeTurno();
     }
 
     public void EjecutarMovimientoOponente(Movimiento movimiento) {
@@ -661,6 +606,7 @@ public class ManejadorJuego : MonoBehaviour {
                     if (movimiento.SeEncuentraId(carta.id)) {
                         //Mandarla a su mazo correspondiente
                         carta.transform.SetParent(mazoDescartar.transform);
+                        DarFichaPorCarta(carta, fichasOponente);
                     }
                 }
                 break;
@@ -673,14 +619,16 @@ public class ManejadorJuego : MonoBehaviour {
                             carta.transform.SetParent(mazoMercado.transform);
                         }
                         else if(carta.grupo == mazoMercado) {
-                            DarAOponente(carta.gameObject);
+                            DarCartaAOponente(carta.gameObject);
                         }
                     }
                 }
                 break;
         }
 
-        turnoJugador = false;
+        if(movimiento.tipoMovimiento != Movimiento.TipoMovimiento.OrdenMazoPrincipal) {
+            EmpezarTurno();
+        }
     }
 
     public int[] GetOrdenGrupo(Grupo grupo) {
@@ -693,15 +641,81 @@ public class ManejadorJuego : MonoBehaviour {
         return orden;
     }
 
+    public void TerminarTurno() {
+        turnoJugador = false;
+        ActualizarMensajeTurno();
+    }
+
+    public void EmpezarTurno() {
+        turnoJugador = true;
+        ActualizarMensajeTurno();
+    }
+
     public enum TipoJugador { Anfitrion, Invitado }
 
     #endregion
 
     #region Utiles
 
+    public bool PuedeAceptar(int cartasNormales, int camellos) {
+        if (mazoJugador.transform.childCount + cartasNormales <= 7 && mazoJugadorCamellos.transform.childCount + camellos <= 7) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public Carta[] ObtenerTodasLasCartas() {
         return FindObjectsOfType<Carta>();
     }
 
+    public Ficha[] ObtenerTodasLasFichas() {
+        return FindObjectsOfType<Ficha>();
+    }
+
+    public Ficha[] ObtenerTodasFichasDeTipo(Ficha.TipoFicha tipoFichas) {
+        Ficha[] todasFichas = ObtenerTodasLasFichas();
+        List<Ficha> fichasDelTipo = new List<Ficha>();
+        foreach (Ficha ficha in todasFichas) {
+            if(ficha.tipoFicha == tipoFichas && ficha.grupo != fichasJugador && ficha.grupo != fichasOponente) {
+                fichasDelTipo.Add(ficha);
+            }
+        }
+        return fichasDelTipo.ToArray();
+    }
+
+    public Carta ObtenerCartaPorId(int id) {
+        Carta[] todasCartas = ObtenerTodasLasCartas();
+        foreach (Carta carta in todasCartas) {
+            if(carta.id == id) {
+                return carta;
+            }
+        }
+        return null;
+    }
+
+    public void ImprimirPanelMensaje(string texto) {
+        GameObject.FindGameObjectWithTag("Mensaje Panel").GetComponent<UnityEngine.UI.Text>().text = texto;
+    }
+
+    public void ActualizarMensajeTurno() {
+        UnityEngine.UI.Text texto = GameObject.FindGameObjectWithTag("Mensaje Turno").GetComponent<UnityEngine.UI.Text>();
+
+        if (turnoJugador) {
+            texto.text = "Es tu turno";
+        } else {
+            texto.text = "Es el turno de tu oponente";
+        }
+    }
+
     #endregion
+
+    private void OnGUI() {
+        if(servidor == null && cliente == null) {
+            if (GUILayout.Button("Iniciar Prueba")) {
+                FindObjectOfType<ManejadorRed>().ConfigurarComoHost();
+                FindObjectOfType<ManejadorRed>().ConfigurarComoCliente();
+            }
+        }
+    }
 }

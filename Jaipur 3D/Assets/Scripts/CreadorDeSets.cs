@@ -22,6 +22,7 @@ public class CreadorDeSets : MonoBehaviour {
         Carta.TipoMercancia.Camello, Carta.TipoMercancia.Camello, Carta.TipoMercancia.Camello, Carta.TipoMercancia.Camello, Carta.TipoMercancia.Camello, Carta.TipoMercancia.Camello,
         Carta.TipoMercancia.Camello, Carta.TipoMercancia.Camello, Carta.TipoMercancia.Camello, Carta.TipoMercancia.Camello, Carta.TipoMercancia.Camello
     };
+
     InfoFicha[] mazoDefectoFichas;
 
 	void Awake () {
@@ -40,6 +41,7 @@ public class CreadorDeSets : MonoBehaviour {
 
                 carta.SetMercancia(mazoDefecto[x]);
                 carta.id = x;
+                carta.gameObject.name = "carta_" + carta.mercancia.ToString().ToLower();
             }
         }
 
@@ -49,6 +51,7 @@ public class CreadorDeSets : MonoBehaviour {
                 Ficha ficha; GameObject fichaObjecto;
                 fichaObjecto = Instantiate(prefabFicha, Vector3.zero, Quaternion.identity);
                 fichaObjecto.transform.SetParent(transform);
+                fichaObjecto.transform.SetAsLastSibling();
                 ficha = fichaObjecto.GetComponent<Ficha>();
 
                 ficha.valorFicha = mazoDefectoFichas[x].valor;

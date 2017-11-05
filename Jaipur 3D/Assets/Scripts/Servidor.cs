@@ -23,7 +23,7 @@ public class Servidor : MonoBehaviour {
 
         DontDestroyOnLoad(gameObject);
 
-        Debug.Log("Creando servidor");
+        Debug.Log("Creando servidor...");
         CrearServidor();
     }
 

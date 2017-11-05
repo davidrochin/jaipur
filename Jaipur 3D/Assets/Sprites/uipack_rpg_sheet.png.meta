@@ -1,11 +1,12 @@
 fileFormatVersion: 2
 guid: 24668f52a825334459cd1541c5f7feef
-timeCreated: 1508807718
+timeCreated: 1509828372
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: uipack_panel_brown
     21300002: uipack_button_beige
+    21300004: uipack_panel_white
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -97,7 +98,7 @@ TextureImporter:
         width: 190
         height: 45
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 7, y: 7, z: 7, w: 7}
       outline: []
       physicsShape: []
@@ -111,8 +112,22 @@ TextureImporter:
         width: 190
         height: 49
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 7, y: 11, z: 6, w: 7}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: uipack_panel_white
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 136
+        width: 190
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 7, y: 7, z: 6, w: 7}
       outline: []
       physicsShape: []
       tessellationDetail: 0

@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4399985977523438}
   - component: {fileID: 114016113258718570}
+  - component: {fileID: 114339245626390402}
   m_Layer: 0
   m_Name: Cliente
   m_TagString: Untagged
@@ -51,5 +52,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c724472f3c65748b3465663fb62b39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clienteNombre: 
-  esAnfitrion: 0
+  manejadorJuego: {fileID: 0}
+--- !u!114 &114339245626390402
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1446467059707256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5edce761c207804f95ac4b2b16f6022, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fichas: 0
+  sellosDeExcelencia: 0
