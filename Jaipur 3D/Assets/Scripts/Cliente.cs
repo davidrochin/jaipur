@@ -16,7 +16,7 @@ public class Cliente : MonoBehaviour {
     public void Arrancar(string ip, int puerto) {
         cliente = new NetworkClient();
         cliente.RegisterHandler(MsgType.Connect, AlConectarse);
-        cliente.RegisterHandler(MensajeString.TIPO, ImprimirEnConsola);
+        //cliente.RegisterHandler(MensajeString.TIPO, ImprimirEnConsola);
         cliente.RegisterHandler(MensajeAccion.TIPO, EjecutarAccion);
         cliente.RegisterHandler(Movimiento.TIPO, EjecutarMovimiento);
         Debug.Log("Tratando de conectarse a " + ip + " en el puerto " + puerto);
@@ -44,12 +44,21 @@ public class Cliente : MonoBehaviour {
         cliente.Send(MensajeString.TIPO, msjString);
     }
 
+    public void EnviarAccion(MensajeAccion.TipoAccion accion) {
+        MensajeAccion msjAcc = new MensajeAccion();
+        msjAcc.tipoAccion = accion;
+        cliente.Send(MensajeAccion.TIPO, msjAcc);
+    }
+
     public void EjecutarAccion(NetworkMessage msjRed) {
         MensajeAccion msjAcc = msjRed.ReadMessage<MensajeAccion>();
         Debug.Log(msjAcc.tipoAccion);
         switch (msjAcc.tipoAccion) {
             case MensajeAccion.TipoAccion.IniciarJuego:
                 SceneManager.LoadScene("juego");
+                break;
+            case MensajeAccion.TipoAccion.AcabarRonda:
+                manejadorJuego.AcabarRonda();
                 break;
         }
     }

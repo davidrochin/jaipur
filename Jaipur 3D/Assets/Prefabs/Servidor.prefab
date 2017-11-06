@@ -51,4 +51,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87b8642cbc90ceb4589370a5d7fa5c39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puerto: 6321
+  puerto: 8321
+  juegoIniciado: 0

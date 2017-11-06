@@ -7,8 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class ManejadorMenu : MonoBehaviour {
 
-    public static ManejadorMenu instancia;
-
     public GameObject menuPrincipal;
     public GameObject menuCrear;
     public GameObject menuUnirse;

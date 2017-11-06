@@ -37,12 +37,11 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Inicializar elementos de la interfaz
         if (panelJuego == null) { panelJuego = GameObject.Find("panel_acciones"); }
-        EstadoPanel(false);
+        MostrarBotonesAccion(false);
 
         //Obtener el cliete y servidor
         cliente = FindObjectOfType<Cliente>();
         servidor = FindObjectOfType<Servidor>();
-        networkManager = FindObjectOfType<NetworkManager>();
 
         //Entrar al cliente y darle la referencia de este ManejadorJuego
         if(cliente != null) { cliente.manejadorJuego = this; }
@@ -68,7 +67,7 @@ public class ManejadorJuego : MonoBehaviour {
 
     public void AgregarCamellosIniciales() {
         Debug.Log("[ManejadorJuego]: Agregando camellos iniciales.");
-        foreach (GameObject camello in mazoPrincipal.ObtenerCamellos(3)) {
+        foreach (Carta camello in mazoPrincipal.ObtenerCamellos(3)) {
             camello.transform.SetParent(mazoMercado.transform);
         }
     }
@@ -87,12 +86,12 @@ public class ManejadorJuego : MonoBehaviour {
         Debug.Log("[ManejadorJuego]: Repartiendo a jugadores.");
 
         //Repartir al jugador
-        foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
+        foreach (Carta x in mazoPrincipal.ObtenerUltimasCartas(5)) {
             DarCartaAJugador(x);
         }
 
         //Repartir al oponente
-        foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
+        foreach (Carta x in mazoPrincipal.ObtenerUltimasCartas(5)) {
             DarCartaAOponente(x);
         }
 
@@ -189,7 +188,7 @@ public class ManejadorJuego : MonoBehaviour {
         //Todo está bien
         foreach (GameObject objeto in seleccion.objetosSeleccionados) {
             cartasMovidas.Add(objeto.GetComponent<Carta>().id);
-            DarCartaAJugador(objeto);
+            DarCartaAJugador(objeto.GetComponent<Carta>());
         }
 
         //Generar el objeto tipo Movimiento que se va a enviar
@@ -325,7 +324,7 @@ public class ManejadorJuego : MonoBehaviour {
             cartasMovidas.Add(carta.id);
 
             if (carta.grupo == mazoMercado) {
-                DarCartaAJugador(carta.gameObject);
+                DarCartaAJugador(carta);
             } else if (carta.grupo == mazoJugador || carta.grupo == mazoJugadorCamellos) {
                 carta.transform.SetParent(mazoMercado.transform);
             }
@@ -345,7 +344,7 @@ public class ManejadorJuego : MonoBehaviour {
 
     #region Acciones del Manejador
 
-    public void DarCartaAJugador(GameObject carta) {
+    public void DarCartaAJugador(Carta carta) {
         if (carta.GetComponent<Carta>().mercancia != Carta.TipoMercancia.Camello) {
             carta.transform.SetParent(mazoJugador.transform);
             mazoJugador.OrdenarCartasPorTipo();
@@ -354,7 +353,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
     }
 
-    public void DarCartaAOponente(GameObject carta) {
+    public void DarCartaAOponente(Carta carta) {
         if (carta.GetComponent<Carta>().mercancia != Carta.TipoMercancia.Camello) {
             carta.transform.SetParent(mazoOponente.transform);
             mazoOponente.OrdenarCartasPorTipo();
@@ -410,8 +409,8 @@ public class ManejadorJuego : MonoBehaviour {
 
     #region Interfaz
 
-    void EstadoPanel(bool estado) {
-        panelJuego.SetActive(estado);
+    void MostrarBotonesAccion(bool mostrar) {
+        panelJuego.SetActive(mostrar);
     }
 
     void ActualizarContadorFichas() {
@@ -433,7 +432,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
     }
 
-    public void CerrarJuego() {
+    public void AbandonarPartida() {
         FindObjectOfType<ManejadorRed>().CerrarTodo();
         FindObjectOfType<ManejadorMenu>().CargarEscena("menu");
     }
@@ -450,7 +449,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Si es ANFITRIÓN
-        if (tipoJugador == TipoJugador.Anfitrion) {
+        if (tipoMaquina == TipoMaquina.Anfitrion) {
             //Revolver las cartas
             mazoPrincipal.RevolverCartas();
 
@@ -464,7 +463,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Si es solo CLIENTE
-        if (tipoJugador == TipoJugador.Invitado) {
+        if (tipoMaquina == TipoMaquina.Invitado) {
             yield return new WaitUntil(() => cartasBarajeadas);
         }
 
@@ -481,7 +480,7 @@ public class ManejadorJuego : MonoBehaviour {
         yield return new WaitWhile(() => ocupado);
 
         Debug.Log("Listo!");
-        EstadoPanel(true);
+        MostrarBotonesAccion(true);
 
         yield return new WaitForEndOfFrame();
     }
@@ -491,8 +490,8 @@ public class ManejadorJuego : MonoBehaviour {
         ocupado = true;
 
         //Repartir al jugador
-        foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
-            if(tipoJugador == TipoJugador.Anfitrion) {
+        foreach (Carta x in mazoPrincipal.ObtenerUltimasCartas(5)) {
+            if(tipoMaquina == TipoMaquina.Anfitrion) {
                 DarCartaAJugador(x);
             } else {
                 DarCartaAOponente(x);
@@ -502,8 +501,8 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Repartir al oponente
-        foreach (GameObject x in mazoPrincipal.ObtenerUltimasCartas(5)) {
-            if (tipoJugador == TipoJugador.Anfitrion) {
+        foreach (Carta x in mazoPrincipal.ObtenerUltimasCartas(5)) {
+            if (tipoMaquina == TipoMaquina.Anfitrion) {
                 DarCartaAOponente(x);
             } else {
                 DarCartaAJugador(x);
@@ -569,32 +568,31 @@ public class ManejadorJuego : MonoBehaviour {
 
     #region Multijugador
 
-    public TipoJugador tipoJugador;
+    public TipoMaquina tipoMaquina;
 
     Cliente cliente;
     Servidor servidor;
-    NetworkManager networkManager;
 
     bool cartasBarajeadas = false;
 
     public void DeterminarTipoJugador() {
         if(servidor != null) {
             Debug.Log("Soy Host");
-            tipoJugador = TipoJugador.Anfitrion;
+            tipoMaquina = TipoMaquina.Anfitrion;
         } else {
             Debug.Log("Soy Invitado");
-            tipoJugador = TipoJugador.Invitado;
+            tipoMaquina = TipoMaquina.Invitado;
         }
     }
 
     public void DeterminarTurno() {
-        if (tipoJugador == TipoJugador.Anfitrion) {
+        if (tipoMaquina == TipoMaquina.Anfitrion) {
             if (ronda == 1) {
                 turnoJugador = true;
             } else {
                 turnoJugador = false;
             }
-        } else if (tipoJugador == TipoJugador.Invitado) {
+        } else if (tipoMaquina == TipoMaquina.Invitado) {
             if (ronda == 1) {
                 turnoJugador = false;
             } else {
@@ -650,7 +648,7 @@ public class ManejadorJuego : MonoBehaviour {
                             carta.transform.SetParent(mazoMercado.transform);
                         }
                         else if(carta.grupo == mazoMercado) {
-                            DarCartaAOponente(carta.gameObject);
+                            DarCartaAOponente(carta);
                         }
                     }
                 }
@@ -663,20 +661,11 @@ public class ManejadorJuego : MonoBehaviour {
 
     }
 
-    public int[] GetOrdenGrupo(Grupo grupo) {
-        int[] orden = new int[grupo.hijosCarta.Length];
-
-        for (int x = 0; x < orden.Length; x++) {
-            orden[x] = grupo.hijosCarta[x].id;
-        }
-
-        return orden;
-    }
-
     public void TerminarTurno() {
         turnoJugador = false;
         ActualizarMensajeTurno();
         ActualizarContadorFichas();
+        RevisarFinDeRonda();
     }
 
     public void EmpezarTurno() {
@@ -684,7 +673,44 @@ public class ManejadorJuego : MonoBehaviour {
         ActualizarMensajeTurno();
     }
 
-    public enum TipoJugador { Anfitrion, Invitado, Prueba }
+    public void IniciarNuevaRonda() {
+
+    }
+
+    public void AcabarRonda() {
+        ImprimirPanelMensaje("¡Se terminó la ronda!");
+        if (ronda == 1) {
+            ronda++;
+            IniciarNuevaRonda();
+        } else if(ronda == 2) {
+            AcabarJuego();
+        }
+    }
+
+    public void AcabarJuego() {
+
+    }
+
+    public void RevisarFinDeRonda() {
+
+        //Contar cuantos grupos de fichas se han acabado
+        int gruposFichasAcabados = 0;
+        foreach (Grupo grupo in FindObjectsOfType<Grupo>()) {
+            if(!grupo.ignorarAlContar && grupo.tipoGrupo == Grupo.TipoGrupo.Fichas && grupo.ObtenerCantidadDeHijos() <= 0) {
+                gruposFichasAcabados++;
+            }
+        }
+
+        //Si se acabaron 3 o se acabaron las cartas del mazo principal, terminar la ronda
+        if(gruposFichasAcabados >= 3 || mazoPrincipal.ObtenerCantidadDeHijos() <= 0) {
+
+            cliente.EnviarAccion(MensajeAccion.TipoAccion.AcabarRonda);
+            AcabarRonda();
+        }
+        
+    }
+
+    public enum TipoMaquina { Anfitrion, Invitado, Prueba }
 
     #endregion
 
@@ -732,8 +758,7 @@ public class ManejadorJuego : MonoBehaviour {
     private void OnGUI() {
         if(servidor == null && cliente == null) {
             if (GUILayout.Button("Iniciar Prueba")) {
-                FindObjectOfType<ManejadorRed>().ConfigurarComoHost();
-                FindObjectOfType<ManejadorRed>().ConfigurarComoCliente();
+                FindObjectOfType<ManejadorRed>().ConfigurarComoPrueba();
             }
         }
     }
