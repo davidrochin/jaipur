@@ -6,18 +6,18 @@ using UnityEngine.SceneManagement;
 
 public class Servidor : MonoBehaviour {
 
-    public static Servidor instancia;
+    public static Servidor singleton;
 
-    public int PUERTO = 8321;
+    public int puerto = 8321;
 
     public bool juegoIniciado = false;
 
     private void Awake() {
 
         //Destruirse si ya hay un Servidor
-        if (instancia == null) {
-            instancia = this;
-        } else if (instancia != null && instancia != this) {
+        if (singleton == null) {
+            singleton = this;
+        } else if (singleton != null && singleton != this) {
             Destroy(gameObject);
         }
 
@@ -36,7 +36,8 @@ public class Servidor : MonoBehaviour {
                 Debug.Log("Ya hay 2 jugadores. Iniciando Juego.");
                 juegoIniciado = true;
                 //SceneManager.LoadScene("juego");
-                EnviarAccionATodos(MensajeAccion.TipoAccion.IniciarJuego);
+                FindObjectOfType<Cliente>().EnviarAccion(MensajeAccion.TipoAccion.IniciarJuego);
+                FindObjectOfType<ManejadorMenu>().CargarEscena("juego");
             }
         }
     }
@@ -52,16 +53,17 @@ public class Servidor : MonoBehaviour {
     }
 
     public void CrearServidor() {
-        NetworkServer.RegisterHandler(MensajeString.TIPO, EnviarStringATodos);
+        //NetworkServer.RegisterHandler(MensajeString.TIPO, EnviarStringATodos);
         NetworkServer.RegisterHandler(Movimiento.TIPO, EnviarMovimientoAlOtro);
-        NetworkServer.Listen(PUERTO);
+        NetworkServer.RegisterHandler(MensajeAccion.TIPO, EnviarAccionAlOtro);
+        NetworkServer.Listen(puerto);
     }
 
-    public void EnviarStringATodos(NetworkMessage mensajeRed) {
+    /*public void EnviarStringATodos(NetworkMessage mensajeRed) {
         MensajeString msjStr = new MensajeString();
         msjStr = mensajeRed.ReadMessage<MensajeString>();
         NetworkServer.SendToAll(MensajeString.TIPO, msjStr);
-    }
+    }*/
 
     public void EnviarMovimientoAlOtro(NetworkMessage mensajeRed) {
         Movimiento msjMov = mensajeRed.ReadMessage<Movimiento>();
@@ -76,10 +78,16 @@ public class Servidor : MonoBehaviour {
         //NetworkServer.SendToAll(Movimiento.TIPO, msjMov);
     }
 
-    public void EnviarAccionATodos(MensajeAccion.TipoAccion accion) {
-        MensajeAccion msjAcc = new MensajeAccion();
-        msjAcc.tipoAccion = accion;
-        NetworkServer.SendToAll(MensajeAccion.TIPO, msjAcc);
+    public void EnviarAccionAlOtro(NetworkMessage mensajeRed) {
+
+        MensajeAccion msjAcc = mensajeRed.ReadMessage<MensajeAccion>();
+        foreach (NetworkConnection conn in NetworkServer.connections) {
+            if (conn != null) {
+                if (conn.connectionId != mensajeRed.conn.connectionId) {
+                    NetworkServer.SendToClient(conn.connectionId, MensajeAccion.TIPO, msjAcc);
+                }
+            }
+        }
     }
 
     IEnumerator RevisarDesconexiones() {

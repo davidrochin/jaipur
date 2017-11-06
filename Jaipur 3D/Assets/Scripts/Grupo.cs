@@ -11,7 +11,7 @@ public class Grupo : MonoBehaviour {
     [Header("Estetica")]
     public bool objetosCaraAbajo = false;
     public bool rotacionDesordenada = false;
-    public float maxRotacionAleatoria = 7f;
+    public float maxRotacionDesordenada = 7f;
     public bool invertirDireccionLateral = false;
     float inversorDireccion = 1f;
 
@@ -21,6 +21,7 @@ public class Grupo : MonoBehaviour {
     bool autoActualizarHijos = true;
 
     public bool congelado = false;
+    public bool ignorarAlContar = false;
 
     private float separacionVertical = 0.01f;
     private float separacionLateral = 1f;
@@ -140,7 +141,7 @@ public class Grupo : MonoBehaviour {
 
         if (rotacionDesordenada) {
             Random.seed = indiceEnMazo;
-            rotacion = Quaternion.Euler(rotacion.eulerAngles.x, rotacion.eulerAngles.y + Random.Range(-maxRotacionAleatoria, maxRotacionAleatoria), rotacion.eulerAngles.z);
+            rotacion = Quaternion.Euler(rotacion.eulerAngles.x, rotacion.eulerAngles.y + Random.Range(-maxRotacionDesordenada, maxRotacionDesordenada), rotacion.eulerAngles.z);
         }
 
         return rotacion;
@@ -162,13 +163,13 @@ public class Grupo : MonoBehaviour {
 
     #region Cartas
 
-    public GameObject[] ObtenerUltimasCartas(int cantidad) {
+    public Carta[] ObtenerUltimasCartas(int cantidad) {
         if (hijos.Length >= cantidad) {
             //Mandar las cartas
-            GameObject[] cartas = new GameObject[cantidad];
+            Carta[] cartas = new Carta[cantidad];
             int ultimoIndex = hijos.Length - 1;
             for (int x = 0; x < cantidad; x++) {
-                cartas[x] = hijos[ultimoIndex];
+                cartas[x] = hijos[ultimoIndex].GetComponent<Carta>();
                 ultimoIndex--;
             }
             return cartas;
@@ -282,8 +283,8 @@ public class Grupo : MonoBehaviour {
         }
     }
 
-    public GameObject[] ObtenerCamellos(int cantidad) {
-        List<GameObject> camellos = new List<GameObject>();
+    public Carta[] ObtenerCamellos(int cantidad) {
+        List<Carta> camellos = new List<Carta>();
         /*foreach (GameObject carta in hijos) {
             if (carta.GetComponent<Carta>().mercancia == Carta.TipoMercancia.Camello) {
                 camellos.Add(carta);
@@ -296,7 +297,7 @@ public class Grupo : MonoBehaviour {
 
         for (int x = transform.childCount - 1; x >= 0; x--) {
             if (transform.GetChild(x).GetComponent<Carta>().mercancia == Carta.TipoMercancia.Camello) {
-                camellos.Add(transform.GetChild(x).gameObject);
+                camellos.Add(transform.GetChild(x).GetComponent<Carta>());
             }
 
             if(camellos.Count >= cantidad) {
@@ -341,7 +342,7 @@ public class Grupo : MonoBehaviour {
         autoActualizarHijos = true;
     }
 
-    public void InvertirOrdenFichas() {
+    /*public void InvertirOrdenFichas() {
         autoActualizarHijos = false;
 
         Ficha[] ordenActual = new Ficha[transform.childCount];
@@ -356,7 +357,7 @@ public class Grupo : MonoBehaviour {
         }
 
         autoActualizarHijos = true;
-    }
+    }*/
 
     public Ficha[] ObtenerFichas() {
         List<Ficha> fichas = new List<Ficha>();
@@ -366,7 +367,7 @@ public class Grupo : MonoBehaviour {
         return fichas.ToArray();
     }
 
-    public int ContarFichas() {
+    public int ContarValoresFichas() {
         int contador = 0;
         foreach (Ficha ficha in gameObject.GetComponentsInChildren<Ficha>()) {
             contador = contador + ficha.valorFicha;
