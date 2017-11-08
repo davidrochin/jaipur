@@ -30,7 +30,11 @@ public class CreadorDeSets : MonoBehaviour {
         //Inicializar el set por defecto de Fichas
         InicializarFichasDefecto();
 
+        CrearSet();
 
+	}
+
+    public void CrearSet() {
         if (tipo == TipoSet.Cartas) {
             //Agregar el mazo de cartas por defecto
             for (int x = 0; x < 55; x++) {
@@ -43,9 +47,7 @@ public class CreadorDeSets : MonoBehaviour {
                 carta.id = x;
                 carta.gameObject.name = "carta_" + carta.mercancia.ToString().ToLower();
             }
-        }
-
-        else if (tipo == TipoSet.Fichas) {
+        } else if (tipo == TipoSet.Fichas) {
             //Agregar el mazo de fichas por defecto
             for (int x = 0; x < 38; x++) {
                 Ficha ficha; GameObject fichaObjecto;
@@ -60,9 +62,16 @@ public class CreadorDeSets : MonoBehaviour {
                 ficha.ActualizarApariencia();
             }
         }
+    }
 
-        
-	}
+    public static void BorrarTodasLasCartasYFichas() {
+        foreach (Carta carta in FindObjectsOfType<Carta>()) {
+            Destroy(carta.gameObject);
+        }
+        foreach (Ficha ficha in FindObjectsOfType<Ficha>()) {
+            Destroy(ficha.gameObject);
+        }
+    }
 
     void InicializarFichasDefecto() {
 

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Jugador : MonoBehaviour{
+[System.Serializable]
+public class Jugador{
 
     public int fichas;
     public int sellosDeExcelencia;

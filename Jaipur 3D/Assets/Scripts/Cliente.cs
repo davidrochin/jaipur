@@ -69,12 +69,14 @@ public class Cliente : MonoBehaviour {
     }
     
     IEnumerator RevisarConexionAServidor() {
-        while (true) {
+        bool revisar = true;
+        while (revisar) {
             if(cliente.isConnected == false) {
                 Debug.LogWarning("Se ha perdido la conexión con el servidor.");
-                FindObjectOfType<ManejadorMenu>().CargarEscena("menu");
+                FindObjectOfType<CreadorDialogos>().CrearDialogo("Se ha perdido la conexión con el anfitrión de la partida.", CreadorDialogos.AccionBoton.SalirAlMenu);
+                revisar = false;
             }
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(2f);
         }
     }
 

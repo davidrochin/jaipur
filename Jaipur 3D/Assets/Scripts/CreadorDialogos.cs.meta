@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 622c69a9d92538844bb01d11ce3181ac
+timeCreated: 1510096428
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - prefabDialogo: {fileID: 1558534659981528, guid: 1244f9b8ea3f2be44b296fda1b9e200f,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

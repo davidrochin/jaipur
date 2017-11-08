@@ -28,6 +28,14 @@ public class BotonesDebug : MonoBehaviour {
             if (GUILayout.Button("Forzar turno")) {
                 manejador.EmpezarTurno();
             }
+            if(GUILayout.Button("Acabar ronda")) {
+                cliente.EnviarAccion(MensajeAccion.TipoAccion.AcabarRonda);
+                manejador.AcabarRonda();
+            }
+            if (GUILayout.Button("Acabar juego")) {
+                cliente.EnviarAccion(MensajeAccion.TipoAccion.AcabarJuego);
+                manejador.AcabarJuego();
+            }
         }
         
     }

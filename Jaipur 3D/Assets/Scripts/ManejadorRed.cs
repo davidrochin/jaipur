@@ -6,8 +6,6 @@ using UnityEngine.Networking;
 
 public class ManejadorRed : MonoBehaviour {
 
-    public static ManejadorRed singleton;
-
     public GameObject prefabServidor;
     public GameObject prefabCliente;
 
@@ -16,17 +14,6 @@ public class ManejadorRed : MonoBehaviour {
 
     Servidor servidor;
     Cliente cliente;
-
-    private void Awake() {
-        //Destruirse si ya hay un ManejadorRed
-        if (singleton == null) {
-            singleton = this;
-        } else if (singleton != null && singleton != this) {
-            Destroy(gameObject);
-        }
-
-        DontDestroyOnLoad(gameObject);
-    }
 
     public void ConfigurarComoHost() {
 

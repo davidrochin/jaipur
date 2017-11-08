@@ -91,14 +91,14 @@ public class Servidor : MonoBehaviour {
     }
 
     IEnumerator RevisarDesconexiones() {
-
-        while (true) {
+        bool revisar = true;
+        while (revisar) {
             if (juegoIniciado && ObtenerNumeroConectados() < 2) {
+                revisar = false;
                 Debug.LogWarning("Se ha desconectado un jugador.");
-                FindObjectOfType<ManejadorRed>().CerrarTodo();
-                FindObjectOfType<ManejadorMenu>().CargarEscena("menu");
+                FindObjectOfType<CreadorDialogos>().CrearDialogo("Se ha perdido la conexión con el invitado.", CreadorDialogos.AccionBoton.SalirAlMenu);
             }
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(2f);
         }
         
     }

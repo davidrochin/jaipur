@@ -23,7 +23,9 @@ public class ManejadorJuego : MonoBehaviour {
     [Header("Selección")]
     Seleccion seleccion;
 
-    Jugador jugador;
+    [Header("Jugadores")]
+    public Jugador jugador;
+    public Jugador oponente;
 
     //Esta variable es la que prevee que el juego siga avanzando si se está ejecutando alguna animación, o algo por el estilo.
     private bool ocupado = false;
@@ -46,12 +48,13 @@ public class ManejadorJuego : MonoBehaviour {
         //Entrar al cliente y darle la referencia de este ManejadorJuego
         if(cliente != null) { cliente.manejadorJuego = this; }
 
+        //Inicializar los objetos Jugador
+        jugador = new Jugador();
+        oponente = new Jugador();
+
         //Determinar que tipo de jugador es este
         DeterminarTipoJugador();
         DeterminarTurno();
-
-        //Obtener el Jugador
-        jugador = FindObjectOfType<Jugador>();
         
     }
 
@@ -283,16 +286,16 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         if (cartasSelecionadasMercado > cartasSeleccionadasJugador) {
-            Debug.Log("¡No puedes recibir mas cartas que las que ofreces!");
+            ImprimirPanelMensaje("¡No puedes recibir mas cartas que las que ofreces!");
             return;
         } else if (cartasSelecionadasMercado < cartasSeleccionadasJugador) {
-            Debug.Log("¡No puedes recibir menos cartas que las que ofreces!");
+            ImprimirPanelMensaje("¡No puedes recibir menos cartas que las que ofreces!");
             return;
         }
 
         //Revisar que sean dos cambios minimo
         if (seleccion.cartasSeleccionadas.Count < 4) {
-            Debug.Log("¡Solo puedes hacer 2 cambios o más!");
+            ImprimirPanelMensaje("¡Solo puedes hacer 2 cambios o más!");
             return;
         }
 
@@ -311,7 +314,7 @@ public class ManejadorJuego : MonoBehaviour {
         for (int x = 0; x < materialesEnJugador.Count; x++) {
             for (int y = 0; y < materialesEnMercado.Count; y++) {
                 if (materialesEnJugador[x] == materialesEnMercado[y]) {
-                    Debug.Log("¡No puedes cambiar por cartas del mismo tipo de material!");
+                    ImprimirPanelMensaje("¡No puedes cambiar por cartas del mismo tipo de material!");
                     return;
                 }
             }
@@ -387,11 +390,18 @@ public class ManejadorJuego : MonoBehaviour {
                 break;
         }
 
+        //Revisar si hay fichas disponibles
         if (grupoFichasCorrecto.ObtenerCantidadDeHijos() > 0) {
+
+            //Obtener la ultima ficha y mandarla al grupo especificado
             Ficha ficha = grupoFichasCorrecto.ObtenerUltimaFicha();
             ficha.EnviarAGrupo(grupoDestino);
+
+            //Sumar el contador de fichas del jugador (u oponente)
             if(grupoDestino == fichasJugador) {
                 jugador.AgregarFichas(ficha.valorFicha);
+            } else if (grupoDestino == fichasOponente) {
+                oponente.AgregarFichas(ficha.valorFicha);
             }
             
         } else {
@@ -675,20 +685,55 @@ public class ManejadorJuego : MonoBehaviour {
 
     public void IniciarNuevaRonda() {
 
+        //Borrar todas las cartas y fichas del tablero. Volver a crear los set
+        CreadorDeSets.BorrarTodasLasCartasYFichas();
+        mazoPrincipal.GetComponent<CreadorDeSets>().CrearSet();
+        fichasPrincipal.GetComponent<CreadorDeSets>().CrearSet();
+
+        //Para la corrutina Juego
+        StopCoroutine(Juego());
+        cartasBarajeadas = false;
+        ocupado = false;
+
+        //Resetear los contadores de fichas
+        jugador.fichas = 0;
+        oponente.fichas = 0;
+        ActualizarContadorFichas();
+
+        //Determinar que jugador empieza y volver a empezar la corrutina Juego
+        DeterminarTurno();
+        StartCoroutine(Juego());
     }
 
     public void AcabarRonda() {
         ImprimirPanelMensaje("¡Se terminó la ronda!");
-        if (ronda == 1) {
-            ronda++;
+
+        //Determinar ganador y entregarle un sello de excelencia
+        if(jugador.fichas > oponente.fichas) {
+            jugador.sellosDeExcelencia++;
+        } else if(jugador.fichas < oponente.fichas) {
+            oponente.sellosDeExcelencia++;
+        }
+
+        //Iniciar la siguiente ronda o acabar el juego de ser necesario
+        if (jugador.sellosDeExcelencia < 2 && oponente.sellosDeExcelencia < 2) {
             IniciarNuevaRonda();
-        } else if(ronda == 2) {
+        } else {
             AcabarJuego();
         }
     }
 
     public void AcabarJuego() {
+        string dialogoFin;
 
+        if (jugador.sellosDeExcelencia > oponente.sellosDeExcelencia) {
+            dialogoFin = "¡Felicidades! Has ganado esta partida.";
+        } else if (jugador.sellosDeExcelencia < oponente.sellosDeExcelencia) {
+            dialogoFin = "Has perdido esta partida. ¡Mejor suerte a la próxima!";
+        } else {
+            dialogoFin = "¡Empate!";
+        }
+        FindObjectOfType<CreadorDialogos>().CrearDialogo(dialogoFin, CreadorDialogos.AccionBoton.SalirAlMenu);
     }
 
     public void RevisarFinDeRonda() {
