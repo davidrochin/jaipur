@@ -36,6 +36,14 @@ public class BotonesDebug : MonoBehaviour {
                 cliente.EnviarAccion(MensajeAccion.TipoAccion.AcabarJuego);
                 manejador.AcabarJuego();
             }
+            if (GUILayout.Button("Conseguir todos los camellos")) {
+                Carta[] todasCartas = manejador.ObtenerTodasLasCartas();
+                foreach (Carta carta in todasCartas) {
+                    if (carta.mercancia == Carta.TipoMercancia.Camello) {
+                        manejador.DarCartaAJugador(carta);
+                    }
+                }
+            }
         }
         
     }

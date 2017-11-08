@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientSkyColor: {r: 0.47794116, g: 0.47794116, b: 0.47794116, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -210,6 +210,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &111660092
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,6 +321,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!4 &215089525
 Transform:
   m_ObjectHideFlags: 0
@@ -327,7 +329,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 215089522}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.01, y: 0, z: -2.082}
+  m_LocalPosition: {x: -0.49, y: 0, z: -2.082}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1133438130}
@@ -575,6 +577,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &294010213
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,6 +629,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &327972667
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,7 +660,7 @@ MonoBehaviour:
   tipoAcomodo: 2
   tipoGrupo: 0
   objetosSeleccionables: 0
-  objetosCaraAbajo: 0
+  objetosCaraAbajo: 1
   rotacionDesordenada: 0
   maxRotacionDesordenada: 7
   invertirDireccionLateral: 0
@@ -664,6 +668,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!4 &327972670
 Transform:
   m_ObjectHideFlags: 0
@@ -671,7 +676,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 327972667}
   m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
-  m_LocalPosition: {x: -0.01, y: 0, z: 2.048}
+  m_LocalPosition: {x: -0.49, y: 0, z: 2.048}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1133438130}
@@ -930,6 +935,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &543305128
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,6 +987,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 1
+  randomizado: 1
 --- !u!1 &634443400
 GameObject:
   m_ObjectHideFlags: 0
@@ -1032,6 +1039,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &681889322
 GameObject:
   m_ObjectHideFlags: 0
@@ -1941,6 +1949,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 1
+  randomizado: 1
 --- !u!1 &1058611563
 GameObject:
   m_ObjectHideFlags: 0
@@ -1979,6 +1988,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!4 &1058611565
 Transform:
   m_ObjectHideFlags: 0
@@ -1986,7 +1996,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1058611563}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.52, y: 0, z: 0.95}
+  m_LocalPosition: {x: -1.85, y: 0, z: 0.95}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1133438130}
@@ -2078,6 +2088,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &1163843090
 GameObject:
   m_ObjectHideFlags: 0
@@ -2348,6 +2359,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &1265365020
 GameObject:
   m_ObjectHideFlags: 0
@@ -2469,6 +2481,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &1309752086
 GameObject:
   m_ObjectHideFlags: 0
@@ -2507,6 +2520,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!4 &1309752088
 Transform:
   m_ObjectHideFlags: 0
@@ -2514,7 +2528,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1309752086}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.015, y: 0, z: 0}
+  m_LocalPosition: {x: -0.495, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1133438130}
@@ -2571,6 +2585,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &1471884371
 GameObject:
   m_ObjectHideFlags: 0
@@ -2788,6 +2803,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 1
+  randomizado: 1
 --- !u!1 &1628371388
 GameObject:
   m_ObjectHideFlags: 0
@@ -3190,7 +3206,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1778464891}
   m_LocalRotation: {x: -0, y: -1, z: -0, w: 0}
-  m_LocalPosition: {x: 3.822, y: 0, z: 2.048}
+  m_LocalPosition: {x: 2.57, y: 0, z: 2.048}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1133438130}
@@ -3218,6 +3234,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &1880325614
 GameObject:
   m_ObjectHideFlags: 0
@@ -3588,7 +3605,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2049124671}
   m_LocalRotation: {x: 0.00012865939, y: 0.0010956137, z: 0.0012349183, w: 0.9999986}
-  m_LocalPosition: {x: -1.52, y: 0, z: -0.96}
+  m_LocalPosition: {x: -1.85, y: 0, z: -0.96}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1133438130}
@@ -3631,6 +3648,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &2051391756
 GameObject:
   m_ObjectHideFlags: 0
@@ -3682,6 +3700,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &2079350431
 GameObject:
   m_ObjectHideFlags: 0
@@ -3705,7 +3724,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2079350431}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.822, y: 0, z: -2.082}
+  m_LocalPosition: {x: 2.57, y: 0, z: -2.082}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1133438130}
@@ -3733,6 +3752,7 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 0
+  randomizado: 1
 --- !u!1 &2080080220
 GameObject:
   m_ObjectHideFlags: 0

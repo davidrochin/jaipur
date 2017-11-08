@@ -10,6 +10,7 @@ public class ManejadorMenu : MonoBehaviour {
     public GameObject menuPrincipal;
     public GameObject menuCrear;
     public GameObject menuUnirse;
+    public GameObject menuConectarse;
     public GameObject menuPausa;
 
     void Awake() {
@@ -28,6 +29,10 @@ public class ManejadorMenu : MonoBehaviour {
 
     public void MostrarMenuCrear(bool valor) {
         menuCrear.SetActive(valor);
+        Text textoIp = GameObject.FindGameObjectWithTag("Texto IP").GetComponent<Text>();
+        if (textoIp != null) {
+            textoIp.text = ManejadorRed.ObtenerIP();
+        }
     }
 
     public void MostrarMenuUnirse(bool valor) {
@@ -38,11 +43,16 @@ public class ManejadorMenu : MonoBehaviour {
         menuPausa.SetActive(valor);
     }
 
+    public void MostrarMenuConectarse(bool valor) {
+        menuConectarse.SetActive(valor);
+    }
+
     public void OcultarTodos() {
         if (menuPrincipal != null) { menuPrincipal.SetActive(false);  }
         if (menuUnirse != null) { menuUnirse.SetActive(false); }
         if (menuCrear != null) { menuCrear.SetActive(false); }
         if (menuPausa != null) { menuPausa.SetActive(false); }
+        if (menuConectarse != null) { menuConectarse.SetActive(false); }
     }
 
     public void CargarEscena(string nombre) {
