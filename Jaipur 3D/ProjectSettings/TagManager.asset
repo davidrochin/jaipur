@@ -11,6 +11,7 @@ TagManager:
   - Mensaje Turno
   - Texto Fichas
   - Mensaje Dialogo
+  - Texto IP
   layers:
   - Default
   - TransparentFX

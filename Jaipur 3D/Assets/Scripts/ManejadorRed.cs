@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using System.Net;
 
 public class ManejadorRed : MonoBehaviour {
 
@@ -14,6 +15,10 @@ public class ManejadorRed : MonoBehaviour {
 
     Servidor servidor;
     Cliente cliente;
+
+    private void Awake() {
+        ObtenerIP();
+    }
 
     public void ConfigurarComoHost() {
 
@@ -66,5 +71,20 @@ public class ManejadorRed : MonoBehaviour {
 
         NetworkServer.Shutdown();
         NetworkClient.ShutdownAll();
+    }
+
+    public static string ObtenerIP() {
+        IPHostEntry host;
+        string ipLocal = "";
+        Debug.Log(Dns.GetHostName());
+        host = Dns.GetHostEntry(Dns.GetHostName());
+
+        foreach (IPAddress direccion in host.AddressList) {
+            if(direccion.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) {
+                ipLocal = direccion.ToString();
+                break;
+            }
+        }
+        return ipLocal;
     }
 }

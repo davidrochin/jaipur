@@ -196,7 +196,7 @@ public class ManejadorJuego : MonoBehaviour {
             }
         }
         if (PuedeAceptar(cantidadCartas, cantidadCamellos) == false) {
-            ImprimirPanelMensaje("Solo puedes tener 7 cartas normales y 7 cartas de camello.");
+            ImprimirPanelMensaje("Solo puedes tener 7 cartas de mercancía.");
             return;
         }
 
@@ -796,6 +796,11 @@ public class ManejadorJuego : MonoBehaviour {
             jugador.sellosDeExcelencia++;
         } else if(jugador.fichas < oponente.fichas) {
             oponente.sellosDeExcelencia++;
+        } 
+        
+        //En caso de empate de fichas
+        else if (jugador.fichas == oponente.fichas) {
+
         }
 
         //Iniciar la siguiente ronda o acabar el juego de ser necesario
@@ -821,6 +826,8 @@ public class ManejadorJuego : MonoBehaviour {
 
     public void RevisarFinDeRonda() {
 
+        bool acabarRonda = false;
+
         //Contar cuantos grupos de fichas se han acabado
         int gruposFichasAcabados = 0;
         foreach (Grupo grupo in FindObjectsOfType<Grupo>()) {
@@ -831,11 +838,13 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Si se acabaron 3 o se acabaron las cartas del mazo principal, terminar la ronda
         if(gruposFichasAcabados >= 3 || mazoPrincipal.ObtenerCantidadDeHijos() <= 0) {
+            acabarRonda = true;
+        }
 
+        if (acabarRonda) {
             cliente.EnviarAccion(MensajeAccion.TipoAccion.AcabarRonda);
             AcabarRonda();
         }
-        
     }
 
     public enum TipoMaquina { Anfitrion, Invitado, Prueba }
@@ -845,7 +854,7 @@ public class ManejadorJuego : MonoBehaviour {
     #region Utiles
 
     public bool PuedeAceptar(int cartasNormales, int camellos) {
-        if (mazoJugador.transform.childCount + cartasNormales <= 7 && mazoJugadorCamellos.transform.childCount + camellos <= 7) {
+        if (mazoJugador.transform.childCount + cartasNormales <= 7 && mazoJugadorCamellos.transform.childCount + camellos <= 11) {
             return true;
         } else {
             return false;
