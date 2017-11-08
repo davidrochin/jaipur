@@ -22,6 +22,7 @@ public class Grupo : MonoBehaviour {
 
     public bool congelado = false;
     public bool ignorarAlContar = false;
+    public bool randomizado = true;
 
     private float separacionVertical = 0.01f;
     private float separacionLateral = 1f;
@@ -218,6 +219,8 @@ public class Grupo : MonoBehaviour {
 
         autoActualizarHijos = true;
 
+        randomizado = true;
+
         return estadoCartas.ToArray();
     }
 
@@ -365,6 +368,74 @@ public class Grupo : MonoBehaviour {
             fichas.Add(transform.GetChild(x).GetComponent<Ficha>());
         }
         return fichas.ToArray();
+    }
+
+    public Orden RandomizarFichas() {
+        autoActualizarHijos = false;
+        List<Ficha> estadoCartas = new List<Ficha>();
+
+        //Revolver el arreglo
+        for (int x = 0; x < hijos.Length; x++) {
+            int nuevoIndex = Random.Range(0, hijos.Length - 1);
+            GameObject temporal = hijos[nuevoIndex];
+            hijos[nuevoIndex] = hijos[x];
+            hijos[x] = temporal;
+        }
+
+        //Quitar los hijos actuales
+        foreach (Transform x in transform) {
+            x.SetParent(null);
+        }
+
+        //Reagregar el arreglo
+        foreach (GameObject go in hijos) {
+            go.transform.SetParent(transform);
+        }
+
+        //Generar el objeto Orden y regresarlo
+        Orden orden = new Orden();
+        List<int> ids = new List<int>();
+        foreach (Transform hijo in transform) {
+            ids.Add(hijo.GetComponent<Ficha>().id);
+        }
+        orden.nombreGrupo = name;
+        orden.ids = ids.ToArray();
+        orden.tipoGrupo = TipoGrupo.Fichas;
+
+        autoActualizarHijos = true;
+
+        randomizado = true;
+
+        return orden;
+    }
+
+    public void OrdenarFichas(Orden orden) {
+        autoActualizarHijos = false;
+
+        //Obtener todas las fichas del grupo
+        Ficha[] fichas = GetComponentsInChildren<Ficha>();
+        //Debug.Log(fichas.Length);
+
+        //Sacar a todos los hijos del transform
+        foreach (Ficha ficha in fichas) {
+            ficha.transform.SetParent(null);
+        }
+
+        //Agregar las fichas en el orden indicado
+        for (int x = 0; x < orden.ids.Length; x++) {
+            int idActual = orden.ids[x];
+            foreach (Ficha ficha in fichas) {
+                if (ficha.id == idActual) {
+                    //Debug.Log("Agregando ficha " + idActual + " en " + orden.nombreGrupo);
+                    ficha.transform.SetParent(transform);
+                    ficha.transform.SetSiblingIndex(x);
+                }
+            }
+        }
+
+        OnTransformChildrenChanged();
+
+        autoActualizarHijos = true;
     }
 
     public int ContarValoresFichas() {

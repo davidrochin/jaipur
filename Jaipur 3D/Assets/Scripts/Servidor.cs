@@ -56,6 +56,7 @@ public class Servidor : MonoBehaviour {
         //NetworkServer.RegisterHandler(MensajeString.TIPO, EnviarStringATodos);
         NetworkServer.RegisterHandler(Movimiento.TIPO, EnviarMovimientoAlOtro);
         NetworkServer.RegisterHandler(MensajeAccion.TIPO, EnviarAccionAlOtro);
+        NetworkServer.RegisterHandler(Orden.TIPO, EnviarOrdenAlOtro);
         NetworkServer.Listen(puerto);
     }
 
@@ -85,6 +86,18 @@ public class Servidor : MonoBehaviour {
             if (conn != null) {
                 if (conn.connectionId != mensajeRed.conn.connectionId) {
                     NetworkServer.SendToClient(conn.connectionId, MensajeAccion.TIPO, msjAcc);
+                }
+            }
+        }
+    }
+
+    public void EnviarOrdenAlOtro(NetworkMessage mensajeRed) {
+        Orden msjOrden = mensajeRed.ReadMessage<Orden>();
+        Cliente cliente = FindObjectOfType<Cliente>();
+        foreach (NetworkConnection conn in NetworkServer.connections) {
+            if (conn != null) {
+                if (conn.connectionId != mensajeRed.conn.connectionId) {
+                    NetworkServer.SendToClient(conn.connectionId, Orden.TIPO, msjOrden);
                 }
             }
         }

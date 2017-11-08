@@ -101,6 +101,14 @@ public class Seleccion : MonoBehaviour {
         }
     }
 
+    public int[] ObtenerSeleccionadasPorId() {
+        List<int> ids = new List<int>();
+        foreach (Carta carta in cartasSeleccionadas) {
+            ids.Add(carta.id);
+        }
+        return ids.ToArray();
+    }
+
     bool seleccionadosTodosCamellosMercado = false;
 
     public void SeleccionarCamellosMercado(bool seleccion) {

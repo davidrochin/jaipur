@@ -35,6 +35,10 @@ public class Carta : MonoBehaviour {
         }
     }
 
+    public void EnviarAGrupo(Grupo gp) {
+        transform.SetParent(gp.transform);
+    }
+
     public void SetSeleccionada(bool param) {
         seleccionada = param;
     }

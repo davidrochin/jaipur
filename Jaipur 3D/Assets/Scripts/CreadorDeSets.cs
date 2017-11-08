@@ -49,7 +49,7 @@ public class CreadorDeSets : MonoBehaviour {
             }
         } else if (tipo == TipoSet.Fichas) {
             //Agregar el mazo de fichas por defecto
-            for (int x = 0; x < 38; x++) {
+            for (int x = 0; x < mazoDefectoFichas.Length; x++) {
                 Ficha ficha; GameObject fichaObjecto;
                 fichaObjecto = Instantiate(prefabFicha, Vector3.zero, Quaternion.identity);
                 fichaObjecto.transform.SetParent(transform);
@@ -58,10 +58,73 @@ public class CreadorDeSets : MonoBehaviour {
 
                 ficha.valorFicha = mazoDefectoFichas[x].valor;
                 ficha.tipoFicha = mazoDefectoFichas[x].tipo;
+                ficha.id = x;
+                ficha.name = "ficha_" + ficha.tipoFicha.ToString().ToLower();
 
                 ficha.ActualizarApariencia();
             }
         }
+    }
+
+    void InicializarFichasDefecto() {
+        mazoDefectoFichas = new InfoFicha[] {
+            new InfoFicha(Ficha.TipoFicha.Cuero, 1),
+            new InfoFicha(Ficha.TipoFicha.Cuero, 1),
+            new InfoFicha(Ficha.TipoFicha.Cuero, 1),
+            new InfoFicha(Ficha.TipoFicha.Cuero, 1),
+            new InfoFicha(Ficha.TipoFicha.Cuero, 1),
+            new InfoFicha(Ficha.TipoFicha.Cuero, 1),
+            new InfoFicha(Ficha.TipoFicha.Cuero, 2),
+            new InfoFicha(Ficha.TipoFicha.Cuero, 3),
+            new InfoFicha(Ficha.TipoFicha.Cuero, 4),
+            new InfoFicha(Ficha.TipoFicha.Especias, 1),
+            new InfoFicha(Ficha.TipoFicha.Especias, 1),
+            new InfoFicha(Ficha.TipoFicha.Especias, 2),
+            new InfoFicha(Ficha.TipoFicha.Especias, 2),
+            new InfoFicha(Ficha.TipoFicha.Especias, 3),
+            new InfoFicha(Ficha.TipoFicha.Especias, 3),
+            new InfoFicha(Ficha.TipoFicha.Especias, 5),
+            new InfoFicha(Ficha.TipoFicha.Tela, 1),
+            new InfoFicha(Ficha.TipoFicha.Tela, 1),
+            new InfoFicha(Ficha.TipoFicha.Tela, 2),
+            new InfoFicha(Ficha.TipoFicha.Tela, 2),
+            new InfoFicha(Ficha.TipoFicha.Tela, 3),
+            new InfoFicha(Ficha.TipoFicha.Tela, 3),
+            new InfoFicha(Ficha.TipoFicha.Tela, 5),
+            new InfoFicha(Ficha.TipoFicha.Plata, 5),
+            new InfoFicha(Ficha.TipoFicha.Plata, 5),
+            new InfoFicha(Ficha.TipoFicha.Plata, 5),
+            new InfoFicha(Ficha.TipoFicha.Plata, 5),
+            new InfoFicha(Ficha.TipoFicha.Plata, 5),
+            new InfoFicha(Ficha.TipoFicha.Oro, 5),
+            new InfoFicha(Ficha.TipoFicha.Oro, 5),
+            new InfoFicha(Ficha.TipoFicha.Oro, 5),
+            new InfoFicha(Ficha.TipoFicha.Oro, 6),
+            new InfoFicha(Ficha.TipoFicha.Oro, 6),
+            new InfoFicha(Ficha.TipoFicha.Diamante, 5),
+            new InfoFicha(Ficha.TipoFicha.Diamante, 5),
+            new InfoFicha(Ficha.TipoFicha.Diamante, 5),
+            new InfoFicha(Ficha.TipoFicha.Diamante, 7),
+            new InfoFicha(Ficha.TipoFicha.Diamante, 7),
+            new InfoFicha(Ficha.TipoFicha.Camello, 5),
+            new InfoFicha(Ficha.TipoFicha.Bonus3, 1),
+            new InfoFicha(Ficha.TipoFicha.Bonus3, 1),
+            new InfoFicha(Ficha.TipoFicha.Bonus3, 2),
+            new InfoFicha(Ficha.TipoFicha.Bonus3, 2),
+            new InfoFicha(Ficha.TipoFicha.Bonus3, 2),
+            new InfoFicha(Ficha.TipoFicha.Bonus3, 3),
+            new InfoFicha(Ficha.TipoFicha.Bonus3, 3),
+            new InfoFicha(Ficha.TipoFicha.Bonus4, 4),
+            new InfoFicha(Ficha.TipoFicha.Bonus4, 4),
+            new InfoFicha(Ficha.TipoFicha.Bonus4, 5),
+            new InfoFicha(Ficha.TipoFicha.Bonus4, 5),
+            new InfoFicha(Ficha.TipoFicha.Bonus4, 6),
+            new InfoFicha(Ficha.TipoFicha.Bonus4, 6),
+            new InfoFicha(Ficha.TipoFicha.Bonus5, 8),
+            new InfoFicha(Ficha.TipoFicha.Bonus5, 8),
+            new InfoFicha(Ficha.TipoFicha.Bonus5, 9),
+            new InfoFicha(Ficha.TipoFicha.Bonus5, 10),
+            new InfoFicha(Ficha.TipoFicha.Bonus5, 10)};
     }
 
     public static void BorrarTodasLasCartasYFichas() {
@@ -71,61 +134,6 @@ public class CreadorDeSets : MonoBehaviour {
         foreach (Ficha ficha in FindObjectsOfType<Ficha>()) {
             Destroy(ficha.gameObject);
         }
-    }
-
-    void InicializarFichasDefecto() {
-
-        mazoDefectoFichas = new InfoFicha[38];
-
-        //Cuero 9
-        mazoDefectoFichas[0] = new InfoFicha(Ficha.TipoFicha.Cuero, 1);
-        mazoDefectoFichas[1] = new InfoFicha(Ficha.TipoFicha.Cuero, 1);
-        mazoDefectoFichas[2] = new InfoFicha(Ficha.TipoFicha.Cuero, 1);
-        mazoDefectoFichas[3] = new InfoFicha(Ficha.TipoFicha.Cuero, 1);
-        mazoDefectoFichas[4] = new InfoFicha(Ficha.TipoFicha.Cuero, 1);
-        mazoDefectoFichas[5] = new InfoFicha(Ficha.TipoFicha.Cuero, 1);
-        mazoDefectoFichas[6] = new InfoFicha(Ficha.TipoFicha.Cuero, 2);
-        mazoDefectoFichas[7] = new InfoFicha(Ficha.TipoFicha.Cuero, 3);
-        mazoDefectoFichas[8] = new InfoFicha(Ficha.TipoFicha.Cuero, 4);
-
-        //Especias 7
-        mazoDefectoFichas[9] = new InfoFicha(Ficha.TipoFicha.Especias, 1);
-        mazoDefectoFichas[10] = new InfoFicha(Ficha.TipoFicha.Especias, 1);
-        mazoDefectoFichas[11] = new InfoFicha(Ficha.TipoFicha.Especias, 2);
-        mazoDefectoFichas[12] = new InfoFicha(Ficha.TipoFicha.Especias, 2);
-        mazoDefectoFichas[13] = new InfoFicha(Ficha.TipoFicha.Especias, 3);
-        mazoDefectoFichas[14] = new InfoFicha(Ficha.TipoFicha.Especias, 3);
-        mazoDefectoFichas[15] = new InfoFicha(Ficha.TipoFicha.Especias, 5);
-
-        //Tela 7
-        mazoDefectoFichas[16] = new InfoFicha(Ficha.TipoFicha.Tela, 1);
-        mazoDefectoFichas[17] = new InfoFicha(Ficha.TipoFicha.Tela, 1);
-        mazoDefectoFichas[18] = new InfoFicha(Ficha.TipoFicha.Tela, 2);
-        mazoDefectoFichas[19] = new InfoFicha(Ficha.TipoFicha.Tela, 2);
-        mazoDefectoFichas[20] = new InfoFicha(Ficha.TipoFicha.Tela, 3);
-        mazoDefectoFichas[21] = new InfoFicha(Ficha.TipoFicha.Tela, 3);
-        mazoDefectoFichas[22] = new InfoFicha(Ficha.TipoFicha.Tela, 5);
-
-        //Plata 5
-        mazoDefectoFichas[23] = new InfoFicha(Ficha.TipoFicha.Plata, 5);
-        mazoDefectoFichas[24] = new InfoFicha(Ficha.TipoFicha.Plata, 5);
-        mazoDefectoFichas[25] = new InfoFicha(Ficha.TipoFicha.Plata, 5);
-        mazoDefectoFichas[26] = new InfoFicha(Ficha.TipoFicha.Plata, 5);
-        mazoDefectoFichas[27] = new InfoFicha(Ficha.TipoFicha.Plata, 5);
-
-        //Oro 5
-        mazoDefectoFichas[28] = new InfoFicha(Ficha.TipoFicha.Oro, 5);
-        mazoDefectoFichas[29] = new InfoFicha(Ficha.TipoFicha.Oro, 5);
-        mazoDefectoFichas[30] = new InfoFicha(Ficha.TipoFicha.Oro, 5);
-        mazoDefectoFichas[31] = new InfoFicha(Ficha.TipoFicha.Oro, 6);
-        mazoDefectoFichas[32] = new InfoFicha(Ficha.TipoFicha.Oro, 6);
-
-        //Diamante 5
-        mazoDefectoFichas[33] = new InfoFicha(Ficha.TipoFicha.Diamante, 5);
-        mazoDefectoFichas[34] = new InfoFicha(Ficha.TipoFicha.Diamante, 5);
-        mazoDefectoFichas[35] = new InfoFicha(Ficha.TipoFicha.Diamante, 5);
-        mazoDefectoFichas[36] = new InfoFicha(Ficha.TipoFicha.Diamante, 7);
-        mazoDefectoFichas[37] = new InfoFicha(Ficha.TipoFicha.Diamante, 7);
     }
 
     public enum TipoSet { Cartas, Fichas }

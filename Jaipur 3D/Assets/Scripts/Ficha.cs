@@ -5,6 +5,8 @@ using UnityEngine;
 [SelectionBase]
 public class Ficha : MonoBehaviour {
 
+    public int id;
+
     public TipoFicha tipoFicha = TipoFicha.Cuero;
     public int valorFicha = 1;
     public Grupo grupo;
@@ -38,6 +40,9 @@ public class Ficha : MonoBehaviour {
             case TipoFicha.Diamante:
                 nombreMaterial = "diamante";
                 break;
+            case TipoFicha.Camello:
+                nombreMaterial = "camello";
+                break;
             case TipoFicha.Bonus3:
                 nombreMaterial = "bonus3";
                 break;
@@ -58,6 +63,13 @@ public class Ficha : MonoBehaviour {
 
     public void ActualizarApariencia() {
         ActualizarTextura();
+
+        //Si es una ficha bonus, no actualizar el texto
+        if (tipoFicha == TipoFicha.Camello || tipoFicha == TipoFicha.Bonus3 ||
+                tipoFicha == TipoFicha.Bonus4 || tipoFicha == TipoFicha.Bonus5) {
+            return;
+        }
+
         foreach (Transform hijo in transform) {
             TextMesh texto = hijo.GetComponent<TextMesh>();
             if (texto != null) {

@@ -15,7 +15,7 @@ public class ManejadorJuego : MonoBehaviour {
 
     [Header("Fichas")]
     public Grupo fichasPrincipal;
-    public Grupo fichasDiamante, fichasOro, fichasPlata, fichasTela, fichasEspecias, fichasCuero, fichasJugador, fichasOponente;
+    public Grupo fichasDiamante, fichasOro, fichasPlata, fichasTela, fichasEspecias, fichasCuero, fichasJugador, fichasOponente, fichasCamello, fichasBonus3, fichasBonus4, fichasBonus5;
 
     [Header("Interfaz")]
     public GameObject panelJuego;
@@ -126,6 +126,18 @@ public class ManejadorJuego : MonoBehaviour {
                     break;
                 case Ficha.TipoFicha.Cuero:
                     grupoDestino = fichasCuero;
+                    break;
+                case Ficha.TipoFicha.Camello:
+                    grupoDestino = fichasCamello;
+                    break;
+                case Ficha.TipoFicha.Bonus3:
+                    grupoDestino = fichasBonus3;
+                    break;
+                case Ficha.TipoFicha.Bonus4:
+                    grupoDestino = fichasBonus4;
+                    break;
+                case Ficha.TipoFicha.Bonus5:
+                    grupoDestino = fichasBonus5;
                     break;
             }
 
@@ -246,15 +258,21 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Todo en orden. Vender las cartas
-        foreach (Carta carta in seleccion.cartasSeleccionadas) {
+        /*foreach (Carta carta in seleccion.cartasSeleccionadas) {
             cartasMovidas.Add(carta.id);
             DarFichaPorCarta(carta, fichasJugador);
             carta.transform.SetParent(mazoDescartar.transform);
+        }*/
+        DarFichasPorCartas(seleccion.cartasSeleccionadas.ToArray(), fichasJugador);
+        foreach (Carta carta in seleccion.cartasSeleccionadas) {
+            carta.EnviarAGrupo(mazoDescartar);
         }
+
+        //Entregar fichas de bonificación de ser necesario
 
         //Generar el objeto de tipo Movimiento que se va a enviar
         Movimiento mov = new Movimiento();
-        mov.ids = cartasMovidas.ToArray();
+        mov.ids = seleccion.ObtenerSeleccionadasPorId();
         mov.tipoMovimiento = Movimiento.TipoMovimiento.Vender;
         cliente.EnviarMovimiento(mov);
 
@@ -410,8 +428,49 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     public void DarFichasPorCartas(Carta[] cartasVendidas, Grupo grupoDestino) {
+
+        //Vender cada una de las cartas
         foreach (Carta carta in cartasVendidas) {
+            //Debug.Log("Vendiendo " + carta.mercancia.ToString());
             DarFichaPorCarta(carta, grupoDestino);
+        }
+
+        //Entregar fichas de bonificación de ser necesario
+        DarFichaBonificacion(cartasVendidas.Length, grupoDestino);
+    }
+
+    public void DarFichaBonificacion(int vendidas, Grupo grupoDestino) {
+        //Debug.Log("Vendidas: " + vendidas);
+
+        Grupo grupoCorrecto = null;
+
+        switch (vendidas) {
+            case 3:
+                grupoCorrecto = fichasBonus3;
+                break;
+            case 4:
+                grupoCorrecto = fichasBonus4;
+                break;
+            case 5:
+                grupoCorrecto = fichasBonus5;
+                break;
+        }
+
+        if(vendidas > 5) {
+            grupoCorrecto = fichasBonus5;
+        }
+
+        if (grupoCorrecto != null && grupoCorrecto.ObtenerCantidadDeHijos() > 0) {
+            Ficha fichaADar = grupoCorrecto.ObtenerUltimaFicha();
+
+            //Sumar el contador de fichas del jugador (u oponente)
+            if (grupoDestino == fichasJugador) {
+                jugador.AgregarFichas(fichaADar.valorFicha);
+            } else if (grupoDestino == fichasOponente) {
+                oponente.AgregarFichas(fichaADar.valorFicha);
+            }
+
+            fichaADar.EnviarAGrupo(grupoDestino);
         }
     }
 
@@ -453,8 +512,11 @@ public class ManejadorJuego : MonoBehaviour {
 
     IEnumerator Juego() {
         yield return new WaitForSeconds(1f);
-       
-        if(servidor == null && cliente == null) {
+
+        OrdenarFichas();
+        Debug.Log("Ya se mandaron las fichas a su lugar");
+
+        if (servidor == null && cliente == null) {
             mazoPrincipal.RevolverCartas();
         }
 
@@ -470,6 +532,10 @@ public class ManejadorJuego : MonoBehaviour {
             mov.tipoMovimiento = Movimiento.TipoMovimiento.OrdenMazoPrincipal;
             mov.ids = mazoPrincipal.ObtenerOrdenPorId();
             cliente.EnviarMovimiento(mov);
+
+            cliente.EnviarOrden(fichasBonus3.RandomizarFichas());
+            cliente.EnviarOrden(fichasBonus4.RandomizarFichas());
+            cliente.EnviarOrden(fichasBonus5.RandomizarFichas());
         }
 
         //Si es solo CLIENTE
@@ -481,8 +547,6 @@ public class ManejadorJuego : MonoBehaviour {
         AgregarCamellosIniciales();
         yield return new WaitForSeconds(0.5f);
         StartCoroutine(LlenarMercadoAnimado());
-        //StartCoroutine(OrdenarFichasAnimado());
-        OrdenarFichas();
         yield return new WaitForSeconds(1f);
 
         //Repartir sus 5 cartas a los jugadores
@@ -584,6 +648,7 @@ public class ManejadorJuego : MonoBehaviour {
     Servidor servidor;
 
     bool cartasBarajeadas = false;
+    bool fichasOrdenadas = false;
 
     public void DeterminarTipoJugador() {
         if(servidor != null) {
@@ -640,14 +705,15 @@ public class ManejadorJuego : MonoBehaviour {
                 LlenarMercado();
                 break;
             case Movimiento.TipoMovimiento.Vender:
+                List<Carta> cartasVendidas = new List<Carta>();
                 foreach (Carta carta in todasCartas) {
                     //Revisar si la carta se movió
                     if (movimiento.SeEncuentraId(carta.id)) {
-                        //Mandarla a su mazo correspondiente
-                        carta.transform.SetParent(mazoDescartar.transform);
-                        DarFichaPorCarta(carta, fichasOponente);
+                        cartasVendidas.Add(carta);
+                        carta.EnviarAGrupo(mazoDescartar);
                     }
                 }
+                DarFichasPorCartas(cartasVendidas.ToArray(), fichasOponente);
                 break;
             case Movimiento.TipoMovimiento.Trueque:
                 foreach (Carta carta in todasCartas) {
@@ -669,6 +735,23 @@ public class ManejadorJuego : MonoBehaviour {
             EmpezarTurno();
         }
 
+    }
+
+    public void EjecutarOrden(Orden orden) {
+        Debug.Log("Ejecutando orden en el grupo " + orden.nombreGrupo + ": " + orden);
+
+        if (!fichasOrdenadas) {
+            OrdenarFichas();
+        }
+
+        Grupo grupo = GameObject.Find(orden.nombreGrupo).GetComponent<Grupo>();
+        switch (grupo.tipoGrupo) {
+            case Grupo.TipoGrupo.Cartas:
+                break;
+            case Grupo.TipoGrupo.Fichas:
+                grupo.OrdenarFichas(orden);
+                break;
+        }
     }
 
     public void TerminarTurno() {

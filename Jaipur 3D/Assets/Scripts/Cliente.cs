@@ -19,6 +19,7 @@ public class Cliente : MonoBehaviour {
         //cliente.RegisterHandler(MensajeString.TIPO, ImprimirEnConsola);
         cliente.RegisterHandler(MensajeAccion.TIPO, EjecutarAccion);
         cliente.RegisterHandler(Movimiento.TIPO, EjecutarMovimiento);
+        cliente.RegisterHandler(Orden.TIPO, EjecutarOrden);
         Debug.Log("Tratando de conectarse a " + ip + " en el puerto " + puerto);
         cliente.Connect(ip, puerto);
     }
@@ -50,6 +51,10 @@ public class Cliente : MonoBehaviour {
         cliente.Send(MensajeAccion.TIPO, msjAcc);
     }
 
+    public void EnviarOrden(Orden orden) {
+        cliente.Send(Orden.TIPO, orden);
+    }
+
     public void EjecutarAccion(NetworkMessage msjRed) {
         MensajeAccion msjAcc = msjRed.ReadMessage<MensajeAccion>();
         Debug.Log(msjAcc.tipoAccion);
@@ -67,7 +72,12 @@ public class Cliente : MonoBehaviour {
         Movimiento mov = msjRed.ReadMessage<Movimiento>();
         manejadorJuego.EjecutarMovimientoOponente(mov);
     }
-    
+
+    public void EjecutarOrden(NetworkMessage msjRed) {
+        Orden orden = msjRed.ReadMessage<Orden>();
+        manejadorJuego.EjecutarOrden(orden);
+    }
+
     IEnumerator RevisarConexionAServidor() {
         bool revisar = true;
         while (revisar) {

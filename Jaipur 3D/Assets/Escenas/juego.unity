@@ -524,6 +524,57 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 250335871}
+--- !u!1 &271389345
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 271389346}
+  - component: {fileID: 271389347}
+  m_Layer: 0
+  m_Name: fichas_camello
+  m_TagString: Untagged
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &271389346
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 271389345}
+  m_LocalRotation: {x: 0.00012865939, y: 0.0010956137, z: 0.0012349183, w: 0.9999986}
+  m_LocalPosition: {x: -5.017, y: -0.003, z: -0.504}
+  m_LocalScale: {x: 1, y: 0.9999999, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1762783599}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0.015000001, y: 0.126, z: 0.142}
+--- !u!114 &271389347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 271389345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00afeb919e5680c4795763935bad8b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tipoAcomodo: 0
+  tipoGrupo: 1
+  objetosSeleccionables: 0
+  objetosCaraAbajo: 0
+  rotacionDesordenada: 0
+  maxRotacionDesordenada: 7
+  invertirDireccionLateral: 0
+  hijos: []
+  hijosCarta: []
+  congelado: 0
+  ignorarAlContar: 0
 --- !u!1 &294010213
 GameObject:
   m_ObjectHideFlags: 0
@@ -828,6 +879,57 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 509066387}
+--- !u!1 &532628811
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 532628812}
+  - component: {fileID: 532628813}
+  m_Layer: 0
+  m_Name: fichas_bonus_4
+  m_TagString: Untagged
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &532628812
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 532628811}
+  m_LocalRotation: {x: 0.00012865939, y: 0.0010956137, z: 0.0012349183, w: 0.9999986}
+  m_LocalPosition: {x: -3.635, y: 0.001, z: -0.508}
+  m_LocalScale: {x: 1, y: 0.9999999, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1762783599}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0.015000001, y: 0.126, z: 0.142}
+--- !u!114 &532628813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 532628811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00afeb919e5680c4795763935bad8b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tipoAcomodo: 0
+  tipoGrupo: 1
+  objetosSeleccionables: 0
+  objetosCaraAbajo: 0
+  rotacionDesordenada: 0
+  maxRotacionDesordenada: 7
+  invertirDireccionLateral: 0
+  hijos: []
+  hijosCarta: []
+  congelado: 0
+  ignorarAlContar: 0
 --- !u!1 &543305128
 GameObject:
   m_ObjectHideFlags: 0
@@ -879,6 +981,57 @@ MonoBehaviour:
   hijosCarta: []
   congelado: 0
   ignorarAlContar: 1
+--- !u!1 &634443400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 634443401}
+  - component: {fileID: 634443402}
+  m_Layer: 0
+  m_Name: fichas_bonus_5
+  m_TagString: Untagged
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &634443401
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 634443400}
+  m_LocalRotation: {x: 0.00012865939, y: 0.0010956137, z: 0.0012349183, w: 0.9999986}
+  m_LocalPosition: {x: -2.953, y: 0.003, z: -0.51}
+  m_LocalScale: {x: 1, y: 0.9999999, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1762783599}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0.015000001, y: 0.126, z: 0.142}
+--- !u!114 &634443402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 634443400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00afeb919e5680c4795763935bad8b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tipoAcomodo: 0
+  tipoGrupo: 1
+  objetosSeleccionables: 0
+  objetosCaraAbajo: 0
+  rotacionDesordenada: 0
+  maxRotacionDesordenada: 7
+  invertirDireccionLateral: 0
+  hijos: []
+  hijosCarta: []
+  congelado: 0
+  ignorarAlContar: 0
 --- !u!1 &681889322
 GameObject:
   m_ObjectHideFlags: 0
@@ -2144,6 +2297,57 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1213729696}
+--- !u!1 &1224557584
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1224557585}
+  - component: {fileID: 1224557586}
+  m_Layer: 0
+  m_Name: fichas_bonus_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1224557585
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1224557584}
+  m_LocalRotation: {x: 0.00012865939, y: 0.0010956137, z: 0.0012349183, w: 0.9999986}
+  m_LocalPosition: {x: -4.322, y: -0.001, z: -0.506}
+  m_LocalScale: {x: 1, y: 0.9999999, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1762783599}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0.015000001, y: 0.126, z: 0.142}
+--- !u!114 &1224557586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1224557584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00afeb919e5680c4795763935bad8b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tipoAcomodo: 0
+  tipoGrupo: 1
+  objetosSeleccionables: 0
+  objetosCaraAbajo: 0
+  rotacionDesordenada: 0
+  maxRotacionDesordenada: 7
+  invertirDireccionLateral: 0
+  hijos: []
+  hijosCarta: []
+  congelado: 0
+  ignorarAlContar: 0
 --- !u!1 &1265365020
 GameObject:
   m_ObjectHideFlags: 0
@@ -2541,7 +2745,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1563731550}
   m_LocalRotation: {x: 0.00012865939, y: 0.0010956137, z: 0.0012349183, w: 0.9999986}
-  m_LocalPosition: {x: -4.985, y: -0.018, z: -0.657}
+  m_LocalPosition: {x: -5.22, y: -0.018, z: -3.27}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1762783599}
@@ -2956,6 +3160,10 @@ Transform:
   - {fileID: 1385327577}
   - {fileID: 1037043622}
   - {fileID: 543305129}
+  - {fileID: 634443401}
+  - {fileID: 532628812}
+  - {fileID: 1224557585}
+  - {fileID: 271389346}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3572,7 +3780,17 @@ MonoBehaviour:
   fichasCuero: {fileID: 1385327579}
   fichasJugador: {fileID: 1037043624}
   fichasOponente: {fileID: 543305131}
+  fichasCamello: {fileID: 271389347}
+  fichasBonus3: {fileID: 1224557586}
+  fichasBonus4: {fileID: 532628813}
+  fichasBonus5: {fileID: 634443402}
   panelJuego: {fileID: 1880325614}
+  jugador:
+    fichas: 0
+    sellosDeExcelencia: 0
+  oponente:
+    fichas: 0
+    sellosDeExcelencia: 0
   tipoMaquina: 0
 --- !u!4 &2080080222
 Transform:
