@@ -73,6 +73,15 @@ public class ManejadorRed : MonoBehaviour {
         NetworkClient.ShutdownAll();
     }
 
+    public void DesactivarCorrutinasDesconexion() {
+        foreach (Servidor s in FindObjectsOfType<Servidor>()) {
+            s.StopAllCoroutines();
+        }
+        foreach (Cliente c in FindObjectsOfType<Cliente>()) {
+            c.StopAllCoroutines();
+        }
+    }
+
     public static string ObtenerIP() {
         IPHostEntry host;
         string ipLocal = "";

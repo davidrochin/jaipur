@@ -821,6 +821,7 @@ public class ManejadorJuego : MonoBehaviour {
         } else {
             dialogoFin = "¡Empate!";
         }
+        FindObjectOfType<ManejadorRed>().DesactivarCorrutinasDesconexion();
         FindObjectOfType<CreadorDialogos>().CrearDialogo(dialogoFin, CreadorDialogos.AccionBoton.SalirAlMenu);
     }
 

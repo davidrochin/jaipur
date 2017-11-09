@@ -65,6 +65,9 @@ public class Cliente : MonoBehaviour {
             case MensajeAccion.TipoAccion.AcabarRonda:
                 manejadorJuego.AcabarRonda();
                 break;
+            case MensajeAccion.TipoAccion.AcabarJuego:
+                manejadorJuego.AcabarJuego();
+                break;
         }
     }
 

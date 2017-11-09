@@ -1,12 +1,13 @@
 fileFormatVersion: 2
 guid: 24668f52a825334459cd1541c5f7feef
-timeCreated: 1509828372
+timeCreated: 1510188838
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: uipack_panel_brown
     21300002: uipack_button_beige
     21300004: uipack_panel_white
+    21300006: uipack_button_green
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -126,8 +127,22 @@ TextureImporter:
         width: 190
         height: 45
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 7, y: 7, z: 6, w: 7}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: uipack_button_green
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 414
+        width: 190
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 7, y: 11, z: 7, w: 7}
       outline: []
       physicsShape: []
       tessellationDetail: 0

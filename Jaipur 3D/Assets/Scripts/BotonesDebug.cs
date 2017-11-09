@@ -15,7 +15,10 @@ public class BotonesDebug : MonoBehaviour {
     }
 
     private void OnGUI() {
-        if(cliente != null && Application.platform == RuntimePlatform.WindowsEditor) {
+
+        if (Application.platform != RuntimePlatform.WindowsEditor) return;
+
+        if(cliente != null) {
             if (GUILayout.Button("Destruir casi todas las fichas")) {
                 foreach (Grupo grupo in FindObjectsOfType<Grupo>()) {
                     if(grupo.tipoGrupo == Grupo.TipoGrupo.Fichas) {
