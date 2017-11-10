@@ -3116,7 +3116,7 @@ MonoBehaviour:
   m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1366, y: 768}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -3831,10 +3831,12 @@ MonoBehaviour:
   fichasBonus5: {fileID: 634443402}
   panelJuego: {fileID: 1880325614}
   jugador:
-    fichas: 0
+    sumaFichas: 0
+    fichasBonificacion: 0
     sellosDeExcelencia: 0
   oponente:
-    fichas: 0
+    sumaFichas: 0
+    fichasBonificacion: 0
     sellosDeExcelencia: 0
   tipoMaquina: 0
 --- !u!4 &2080080222

@@ -10,6 +10,11 @@ public class CalidadCamara : MonoBehaviour {
     public AjusteCalidadCamara[] ajustes;
 
     void Awake () {
+        //Si es celular, establecer la calidad mas baja
+        if(Application.platform == RuntimePlatform.Android) {
+            QualitySettings.SetQualityLevel(0);
+        }
+
         nivelCalidad = QualitySettings.GetQualityLevel();
 
         Camera.main.renderingPath = ajustes[nivelCalidad].renderizado;

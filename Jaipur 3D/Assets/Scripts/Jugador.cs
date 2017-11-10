@@ -5,11 +5,12 @@ using UnityEngine;
 [System.Serializable]
 public class Jugador{
 
-    public int fichas;
+    public int sumaFichas;
+    public int fichasBonificacion;
     public int sellosDeExcelencia;
 
-    public void AgregarFichas(int cantidad) {
-        fichas = fichas + cantidad;
+    public void SumarFicha(int cantidad) {
+        sumaFichas = sumaFichas + cantidad;
     }
 
 }

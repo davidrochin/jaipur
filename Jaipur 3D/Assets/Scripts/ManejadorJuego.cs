@@ -235,7 +235,9 @@ public class ManejadorJuego : MonoBehaviour {
             return;
         }
 
+        //Guardar el material de la primera carta para checar que todas sean iguales
         Carta.TipoMercancia primerMaterial = seleccion.cartasSeleccionadas[0].mercancia;
+
         foreach (Carta carta in seleccion.cartasSeleccionadas) {
 
             //Revisar que las cartas no sean del mercado
@@ -253,6 +255,14 @@ public class ManejadorJuego : MonoBehaviour {
             //Revisar que sean del mismo material
             if (carta.mercancia != primerMaterial) {
                 ImprimirPanelMensaje("¡No puedes vender cartas de diferente tipo de material!");
+                return;
+            }
+        }
+
+        //Si es Plata, Oro o Diamante, revisar que sean minimo 2
+        if(primerMaterial == Carta.TipoMercancia.Plata || primerMaterial == Carta.TipoMercancia.Oro || primerMaterial == Carta.TipoMercancia.Diamante) {
+            if(seleccion.cartasSeleccionadas.Count < 2) {
+                ImprimirPanelMensaje("¡Ese tipo de mercancía solo se puede vender de a 2!");
                 return;
             }
         }
@@ -338,6 +348,19 @@ public class ManejadorJuego : MonoBehaviour {
             }
         }
 
+        //Revisar que despues del cambio, el jugador no superará el limite de 7 cartas.
+        int cantSeleccionadasMercado = 0;
+        int cantSeleccionadasJugador = 0;
+        foreach (Carta carta in seleccion.cartasSeleccionadas) {
+            if(carta.grupo == mazoMercado) { cantSeleccionadasMercado++; }
+            if (carta.grupo == mazoJugador) { cantSeleccionadasJugador++; }
+        }
+
+        if(!PuedeAceptar(cantSeleccionadasMercado - cantSeleccionadasJugador, 0)) {
+            ImprimirPanelMensaje("¡No puedes tener más de 7 cartas de mercancía!");
+            return;
+        }
+
         //Hacer el trueque
         foreach (Carta carta in seleccion.cartasSeleccionadas) {
 
@@ -417,9 +440,9 @@ public class ManejadorJuego : MonoBehaviour {
 
             //Sumar el contador de fichas del jugador (u oponente)
             if(grupoDestino == fichasJugador) {
-                jugador.AgregarFichas(ficha.valorFicha);
+                jugador.SumarFicha(ficha.valorFicha);
             } else if (grupoDestino == fichasOponente) {
-                oponente.AgregarFichas(ficha.valorFicha);
+                oponente.SumarFicha(ficha.valorFicha);
             }
             
         } else {
@@ -465,9 +488,11 @@ public class ManejadorJuego : MonoBehaviour {
 
             //Sumar el contador de fichas del jugador (u oponente)
             if (grupoDestino == fichasJugador) {
-                jugador.AgregarFichas(fichaADar.valorFicha);
+                jugador.SumarFicha(fichaADar.valorFicha);
+                jugador.fichasBonificacion++;
             } else if (grupoDestino == fichasOponente) {
-                oponente.AgregarFichas(fichaADar.valorFicha);
+                oponente.SumarFicha(fichaADar.valorFicha);
+                oponente.fichasBonificacion++;
             }
 
             fichaADar.EnviarAGrupo(grupoDestino);
@@ -484,7 +509,7 @@ public class ManejadorJuego : MonoBehaviour {
 
     void ActualizarContadorFichas() {
         //GameObject.FindGameObjectWithTag("Texto Fichas").GetComponent<UnityEngine.UI.Text>().text = "" + fichasJugador.ContarFichas();
-        GameObject.FindGameObjectWithTag("Texto Fichas").GetComponent<UnityEngine.UI.Text>().text = "" + jugador.fichas;
+        GameObject.FindGameObjectWithTag("Texto Fichas").GetComponent<UnityEngine.UI.Text>().text = "" + jugador.sumaFichas;
     }
 
     public void ImprimirPanelMensaje(string texto) {
@@ -779,8 +804,10 @@ public class ManejadorJuego : MonoBehaviour {
         ocupado = false;
 
         //Resetear los contadores de fichas
-        jugador.fichas = 0;
-        oponente.fichas = 0;
+        jugador.sumaFichas = 0;
+        jugador.fichasBonificacion = 0;
+        oponente.sumaFichas = 0;
+        oponente.fichasBonificacion = 0;
         ActualizarContadorFichas();
 
         //Determinar que jugador empieza y volver a empezar la corrutina Juego
@@ -791,16 +818,28 @@ public class ManejadorJuego : MonoBehaviour {
     public void AcabarRonda() {
         ImprimirPanelMensaje("¡Se terminó la ronda!");
 
+        //Dar la ficha de camello al jugador con mas camellos
+        //CODIGO
+
         //Determinar ganador y entregarle un sello de excelencia
-        if(jugador.fichas > oponente.fichas) {
+        if(jugador.sumaFichas > oponente.sumaFichas) {
             jugador.sellosDeExcelencia++;
-        } else if(jugador.fichas < oponente.fichas) {
+        } else if(jugador.sumaFichas < oponente.sumaFichas) {
             oponente.sellosDeExcelencia++;
         } 
         
         //En caso de empate de fichas
-        else if (jugador.fichas == oponente.fichas) {
+        else if (jugador.sumaFichas == oponente.sumaFichas) {
+            if(jugador.fichasBonificacion > oponente.fichasBonificacion) {
+                jugador.sellosDeExcelencia++;
+            } else if (jugador.fichasBonificacion < oponente.fichasBonificacion) {
+                oponente.sellosDeExcelencia++;
+            } 
+            
+            //En caso de empate de fichas de bonificación
+            else if (jugador.fichasBonificacion == oponente.fichasBonificacion) {
 
+            }
         }
 
         //Iniciar la siguiente ronda o acabar el juego de ser necesario
@@ -859,6 +898,22 @@ public class ManejadorJuego : MonoBehaviour {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public bool PuedeAceptar(Carta[] cartas) {
+        int cuentaMercancias = 0;
+
+        foreach (Carta carta in cartas) {
+            if(carta.mercancia != Carta.TipoMercancia.Camello) {
+                cuentaMercancias++;
+            }
+        }
+
+        if(mazoJugador.ObtenerCantidadDeHijos() + cuentaMercancias > 7) {
+            return false;
+        } else {
+            return true;
         }
     }
 
