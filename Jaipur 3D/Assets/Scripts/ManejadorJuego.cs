@@ -346,6 +346,14 @@ public class ManejadorJuego : MonoBehaviour {
             }
         }
 
+        //Revisar que no esten seleccionados camellos del mercado
+        foreach (Carta carta in seleccion.cartasSeleccionadas) {
+            if(carta.mercancia == Carta.TipoMercancia.Camello && carta.grupo == mazoMercado) {
+                ImprimirPanelMensaje("¡No puedes cambiar cartas por camellos del mercado!");
+                return;
+            }
+        }
+
         //Revisar que despues del cambio, el jugador no superará el limite de 7 cartas.
         int cantSeleccionadasMercado = 0;
         int cantSeleccionadasJugador = 0;
