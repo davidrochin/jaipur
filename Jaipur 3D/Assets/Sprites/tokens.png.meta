@@ -1,10 +1,14 @@
 fileFormatVersion: 2
 guid: 303b8a774e307f64b84f2ec5aa95ff5a
-timeCreated: 1510178918
+timeCreated: 1510342991
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: detras_ficha
+    21300002: sello_excelencia
+    21300004: ficha_bonificacion
+    21300006: fichas_producto
+    21300008: fichas_bonificacion
   externalObjects: {}
   serializedVersion: 4
   mipmaps:
@@ -101,9 +105,65 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 781
-        y: 2
+        y: 124
         width: 77
         height: 76
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: sello_excelencia
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 122
+        width: 78
+        height: 78
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: ficha_bonificacion
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 0
+        width: 79
+        height: 78
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fichas_producto
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 43
+        width: 78
+        height: 79
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fichas_bonificacion
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 122
+        width: 78
+        height: 78
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

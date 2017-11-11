@@ -12,6 +12,7 @@ TagManager:
   - Texto Fichas
   - Mensaje Dialogo
   - Texto IP
+  - Panel Fichas Ronda
   layers:
   - Default
   - TransparentFX

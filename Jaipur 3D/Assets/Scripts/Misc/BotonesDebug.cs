@@ -8,6 +8,8 @@ public class BotonesDebug : MonoBehaviour {
     Servidor servidor;
     Cliente cliente;
 
+    public bool activado = false;
+
     private void Awake() {
         manejador = FindObjectOfType<ManejadorJuego>();
         servidor = FindObjectOfType<Servidor>();
@@ -16,7 +18,7 @@ public class BotonesDebug : MonoBehaviour {
 
     private void OnGUI() {
 
-        if (Application.platform != RuntimePlatform.WindowsEditor) return;
+        if (!activado) return;
 
         if(cliente != null) {
             if (GUILayout.Button("Destruir casi todas las fichas")) {
@@ -49,5 +51,9 @@ public class BotonesDebug : MonoBehaviour {
             }
         }
         
+    }
+
+    public void AlternarActivado() {
+        activado = !activado;
     }
 }

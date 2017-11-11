@@ -202,8 +202,10 @@ public class ManejadorJuego : MonoBehaviour {
 
         //Todo está bien
         foreach (GameObject objeto in seleccion.objetosSeleccionados) {
-            cartasMovidas.Add(objeto.GetComponent<Carta>().id);
-            DarCartaAJugador(objeto.GetComponent<Carta>());
+            Carta carta = objeto.GetComponent<Carta>();
+            cartasMovidas.Add(carta.id);
+            DarCartaAJugador(carta);
+            ImprimirPanelMensaje("Has tomado una carta de " + carta.mercancia.ToString() + ".");
         }
 
         //Generar el objeto tipo Movimiento que se va a enviar
@@ -268,17 +270,13 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         //Todo en orden. Vender las cartas
-        /*foreach (Carta carta in seleccion.cartasSeleccionadas) {
-            cartasMovidas.Add(carta.id);
-            DarFichaPorCarta(carta, fichasJugador);
-            carta.transform.SetParent(mazoDescartar.transform);
-        }*/
         DarFichasPorCartas(seleccion.cartasSeleccionadas.ToArray(), fichasJugador);
+
         foreach (Carta carta in seleccion.cartasSeleccionadas) {
             carta.EnviarAGrupo(mazoDescartar);
         }
 
-        //Entregar fichas de bonificación de ser necesario
+        ImprimirPanelMensaje("Has vendido " + seleccion.cartasSeleccionadas.Count + " carta(s) de " + seleccion.cartasSeleccionadas[0].mercancia.ToString() + ".");
 
         //Generar el objeto de tipo Movimiento que se va a enviar
         Movimiento mov = new Movimiento();
@@ -441,8 +439,10 @@ public class ManejadorJuego : MonoBehaviour {
             //Sumar el contador de fichas del jugador (u oponente)
             if(grupoDestino == fichasJugador) {
                 jugador.SumarFicha(ficha.valorFicha);
+                jugador.fichasProducto++;
             } else if (grupoDestino == fichasOponente) {
                 oponente.SumarFicha(ficha.valorFicha);
+                oponente.fichasProducto++;
             }
             
         } else {
@@ -804,10 +804,8 @@ public class ManejadorJuego : MonoBehaviour {
         ocupado = false;
 
         //Resetear los contadores de fichas
-        jugador.sumaFichas = 0;
-        jugador.fichasBonificacion = 0;
-        oponente.sumaFichas = 0;
-        oponente.fichasBonificacion = 0;
+        jugador.ResetearFichas();
+        oponente.ResetearFichas();
         ActualizarContadorFichas();
 
         //Determinar que jugador empieza y volver a empezar la corrutina Juego
@@ -818,29 +816,43 @@ public class ManejadorJuego : MonoBehaviour {
     public void AcabarRonda() {
         ImprimirPanelMensaje("¡Se terminó la ronda!");
 
+        string mensajeDialogo = "";
+
         //Dar la ficha de camello al jugador con mas camellos
         //CODIGO
 
         //Determinar ganador y entregarle un sello de excelencia
         if(jugador.sumaFichas > oponente.sumaFichas) {
             jugador.sellosDeExcelencia++;
+            mensajeDialogo += "Has ganado esta ronda por mayoría de fichas.\n";
         } else if(jugador.sumaFichas < oponente.sumaFichas) {
             oponente.sellosDeExcelencia++;
+            mensajeDialogo += "Has perdido esta ronda por minoría de fichas.\n";
         } 
         
         //En caso de empate de fichas
         else if (jugador.sumaFichas == oponente.sumaFichas) {
             if(jugador.fichasBonificacion > oponente.fichasBonificacion) {
                 jugador.sellosDeExcelencia++;
+                mensajeDialogo += "Has ganado esta ronda por mayoría de fichas de bonificación.\n";
             } else if (jugador.fichasBonificacion < oponente.fichasBonificacion) {
                 oponente.sellosDeExcelencia++;
+                mensajeDialogo += "Has perdido esta ronda por minoría de fichas de bonificación.\n";
             } 
             
             //En caso de empate de fichas de bonificación
             else if (jugador.fichasBonificacion == oponente.fichasBonificacion) {
-
+                if (jugador.fichasProducto > oponente.fichasProducto) {
+                    jugador.sellosDeExcelencia++;
+                    mensajeDialogo += "Has ganado esta ronda por mayoría de fichas de producto.\n";
+                } else if (jugador.fichasProducto < oponente.fichasProducto) {
+                    oponente.sellosDeExcelencia++;
+                    mensajeDialogo += "Has perdido esta ronda por minoría de fichas de producto.\n";
+                }
             }
         }
+
+        FindObjectOfType<CreadorDialogos>().CrearDialogo(mensajeDialogo, CreadorDialogos.AccionBoton.Nada);
 
         //Iniciar la siguiente ronda o acabar el juego de ser necesario
         if (jugador.sellosDeExcelencia < 2 && oponente.sellosDeExcelencia < 2) {

@@ -13,6 +13,7 @@ public class CalidadCamara : MonoBehaviour {
         //Si es celular, establecer la calidad mas baja
         if(Application.platform == RuntimePlatform.Android) {
             QualitySettings.SetQualityLevel(0);
+            AjustarCamaraParaAndroid();
         }
 
         nivelCalidad = QualitySettings.GetQualityLevel();
@@ -25,6 +26,13 @@ public class CalidadCamara : MonoBehaviour {
         }
 
 	}
+
+    void AjustarCamaraParaAndroid() {
+        Camera.main.transform.position = new Vector3(0f, 4.31f, -2.99f);
+        Camera.main.transform.rotation = Quaternion.Euler(new Vector3(68.6f, 0f, -0.002f));
+        Camera.main.fieldOfView = 60;
+        
+    }
 }
 
 [System.Serializable]
