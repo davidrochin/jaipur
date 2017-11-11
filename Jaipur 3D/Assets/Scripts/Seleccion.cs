@@ -34,8 +34,6 @@ public class Seleccion : MonoBehaviour {
 
             //Revisar si se seleccionó algun camello del mercado
             if (carta.mercancia == Carta.TipoMercancia.Camello && carta.grupo == manejador.mazoMercado && !seleccionadosTodosCamellosMercado) {
-                //LimpiarSeleccion(manejador.mazoMercado);
-                //LimpiarSeleccion(manejador.mazoJugadorCamellos);
                 LimpiarSeleccion();
                 SeleccionarCamellosMercado(true);
                 return true;
