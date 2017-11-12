@@ -205,7 +205,12 @@ public class ManejadorJuego : MonoBehaviour {
             Carta carta = objeto.GetComponent<Carta>();
             cartasMovidas.Add(carta.id);
             DarCartaAJugador(carta);
-            ImprimirPanelMensaje("Has tomado una carta de " + carta.mercancia.ToString() + ".");
+        }
+
+        if(seleccion.cartasSeleccionadas[0].mercancia == Carta.TipoMercancia.Camello) {
+            ImprimirPanelMensaje("Has tomado todos los camellos.");
+        } else {
+            ImprimirPanelMensaje("Has tomado una carta de " + seleccion.cartasSeleccionadas[0].mercancia.ToString() + ".");
         }
 
         //Generar el objeto tipo Movimiento que se va a enviar
