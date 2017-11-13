@@ -137,7 +137,7 @@ public class Grupo : MonoBehaviour {
         if (!objetosCaraAbajo) {
             rotacion = transform.rotation;
         } else {
-            rotacion = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, 180f);
+            rotacion = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + 180f);
         }
 
         if (rotacionDesordenada) {

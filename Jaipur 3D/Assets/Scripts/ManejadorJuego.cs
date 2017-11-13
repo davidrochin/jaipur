@@ -160,6 +160,12 @@ public class ManejadorJuego : MonoBehaviour {
         //Lista para mandar las cartas movidas
         List<int> cartasMovidas = new List<int>();
 
+        //Revisar si la carta es del mercado
+        if (seleccion.cartasSeleccionadas[0].grupo != mazoMercado) {
+            ImprimirPanelMensaje("Solo puedes tomar cartas del mercado.");
+            return;
+        }
+
         //Revisar si son solo camellos
         bool sonSoloCamellos = true;
         foreach (Carta carta in seleccion.cartasSeleccionadas) {
@@ -177,13 +183,6 @@ public class ManejadorJuego : MonoBehaviour {
                 ImprimirPanelMensaje("No puedes tomar mas de una carta, al menos sean camellos.");
                 return;
             }
-        }
-
-        Debug.Log(mazoMercado);
-        //Revisar si la carta es del mercado
-        if (seleccion.cartasSeleccionadas[0].grupo != mazoMercado) {
-            ImprimirPanelMensaje("Solo puedes tomar cartas del mercado.");
-            return;
         }
 
         //Revisar que el jugador pueda aceptar las cartas

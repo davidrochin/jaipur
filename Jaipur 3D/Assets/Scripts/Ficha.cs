@@ -54,9 +54,9 @@ public class Ficha : MonoBehaviour {
                 break;
         }
 
-        foreach (Transform hijo in transform) {
-            if (hijo.GetComponent<TextMesh>() == null) {
-                hijo.GetComponent<Renderer>().material = Resources.Load("Fichas/" + nombreMaterial, typeof(Material)) as Material;
+        foreach (Renderer rend in GetComponentsInChildren<Renderer>()) {
+            if (rend.tag.Equals("Frente Ficha")) {
+                rend.material = Resources.Load("Fichas/" + nombreMaterial, typeof(Material)) as Material;
             }
         }
     }
