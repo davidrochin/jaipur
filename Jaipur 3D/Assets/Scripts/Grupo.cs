@@ -370,7 +370,7 @@ public class Grupo : MonoBehaviour {
         return fichas.ToArray();
     }
 
-    public Orden RandomizarFichas() {
+    public MensajeOrden RandomizarFichas() {
         autoActualizarHijos = false;
         List<Ficha> estadoCartas = new List<Ficha>();
 
@@ -393,7 +393,7 @@ public class Grupo : MonoBehaviour {
         }
 
         //Generar el objeto Orden y regresarlo
-        Orden orden = new Orden();
+        MensajeOrden orden = new MensajeOrden();
         List<int> ids = new List<int>();
         foreach (Transform hijo in transform) {
             ids.Add(hijo.GetComponent<Ficha>().id);
@@ -409,7 +409,7 @@ public class Grupo : MonoBehaviour {
         return orden;
     }
 
-    public void OrdenarFichas(Orden orden) {
+    public void OrdenarFichas(MensajeOrden orden) {
         autoActualizarHijos = false;
 
         //Obtener todas las fichas del grupo
