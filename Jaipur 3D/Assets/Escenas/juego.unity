@@ -1995,7 +1995,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1037043621}
   m_LocalRotation: {x: 0.000037650236, y: 0.0011066752, z: -0.08437365, w: 0.9964336}
+<<<<<<< HEAD
   m_LocalPosition: {x: -0.61, y: 0.057, z: -3.16}
+=======
+  m_LocalPosition: {x: -0.61, y: 0, z: -3.37}
+>>>>>>> origin/master
   m_LocalScale: {x: 1, y: 0.9999999, z: 1}
   m_Children: []
   m_Father: {fileID: 1762783599}
@@ -4047,6 +4051,11 @@ MonoBehaviour:
     fichasProducto: 0
     sellosDeExcelencia: 0
   oponente:
+    sumaFichas: 0
+    fichasBonificacion: 0
+    fichasProducto: 0
+    sellosDeExcelencia: 0
+  ultimoGanador:
     sumaFichas: 0
     fichasBonificacion: 0
     fichasProducto: 0

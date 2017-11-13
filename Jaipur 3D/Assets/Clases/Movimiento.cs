@@ -29,7 +29,7 @@ public class Movimiento : MessageBase {
     }
 }
 
-public class Orden : MessageBase {
+public class MensajeOrden : MessageBase {
     public static short TIPO = 101;
     public int[] ids;
     public string nombreGrupo;
@@ -62,4 +62,10 @@ public class MensajeAccion : MessageBase {
     public static short TIPO = 103;
     public TipoAccion tipoAccion;
     public enum TipoAccion { IniciarJuego, IniciarRonda, AcabarRonda, AcabarJuego, Salir }
+}
+
+public class MensajeTurno : MessageBase {
+    public static short TIPO = 104;
+    public Jugador jugador;
+    public enum Jugador { Anfitrion, Invitado }
 }

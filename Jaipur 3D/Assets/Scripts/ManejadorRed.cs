@@ -37,8 +37,14 @@ public class ManejadorRed : MonoBehaviour {
 
         cliente = Instantiate(prefabCliente).GetComponent<Cliente>();
         if (textoIp != null && textoPuerto != null) {
+
             //Revisar que el InputField de la IP no esté vacio
             if (textoIp.text.Trim().Equals("")) { textoIp.GetComponentInParent<InputField>().text = "localhost"; }
+
+            //Guardar la IP como ultima ingresada
+            PlayerPrefs.SetString("ultima_ip", textoIp.text);
+
+            //Arrancar el cliente
             cliente.Arrancar(textoIp.text, int.Parse(textoPuerto.text));
         } else {
             Debug.LogWarning("No se encontró el InputField de la IP y Puerto asi que se conectó a: localhost 8321.");
@@ -79,6 +85,12 @@ public class ManejadorRed : MonoBehaviour {
         }
         foreach (Cliente c in FindObjectsOfType<Cliente>()) {
             c.StopAllCoroutines();
+        }
+    }
+
+    public void CargarUltimaIP() {
+        if(textoIp != null) {
+            textoIp.GetComponentInParent<InputField>().text = PlayerPrefs.GetString("ultima_ip", "");
         }
     }
 

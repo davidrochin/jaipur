@@ -26,6 +26,7 @@ public class ManejadorJuego : MonoBehaviour {
     [Header("Jugadores")]
     public Jugador jugador;
     public Jugador oponente;
+    public Jugador ultimoGanador;
 
     //Esta variable es la que prevee que el juego siga avanzando si se está ejecutando alguna animación, o algo por el estilo.
     private bool ocupado = false;
@@ -33,7 +34,6 @@ public class ManejadorJuego : MonoBehaviour {
     private const float TIEMPO_ENTRE_CARTA_ANIMADA = 0.3f;
 
     void Awake() {
-
         //Buscar el componente Seleccion
         seleccion = FindObjectOfType<Seleccion>();
 
@@ -698,19 +698,37 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     public void DeterminarTurno() {
-        if (tipoMaquina == TipoMaquina.Anfitrion) {
-            if (ronda == 1) {
+
+        //Si es el Anfitrion y es la primera ronda, determinar el turno aleatoriamente
+        if (tipoMaquina == TipoMaquina.Anfitrion && ronda == 1) {
+            MensajeTurno turno = new MensajeTurno();
+            float ran = Random.Range(0f,1f); Debug.Log("ran = " + ran);
+
+            //Determinar aleatoriamente el turno
+            if(ran < 0.5) {
+                Debug.Log("Es el turno del anfitrion");
+                turno.jugador = MensajeTurno.Jugador.Anfitrion;
                 turnoJugador = true;
             } else {
+                Debug.Log("Es el turno del invitado");
+                turno.jugador = MensajeTurno.Jugador.Invitado;
                 turnoJugador = false;
             }
-        } else if (tipoMaquina == TipoMaquina.Invitado) {
-            if (ronda == 1) {
+
+            //Enviarle el turno al otro jugador
+            cliente.EnviarTurno(turno);
+        } 
+        
+        //Si no es la primera ronda, determinar el turno
+        //deacuerdo al perdedor de la ronda anterior
+        else if(ronda != 1){
+            if(ultimoGanador == jugador) {
                 turnoJugador = false;
-            } else {
+            } else if(ultimoGanador == oponente) {
                 turnoJugador = true;
             }
         }
+
         ActualizarMensajeTurno();
     }
 
@@ -774,7 +792,7 @@ public class ManejadorJuego : MonoBehaviour {
 
     }
 
-    public void EjecutarOrden(Orden orden) {
+    public void EjecutarOrden(MensajeOrden orden) {
         Debug.Log("Ejecutando orden en el grupo " + orden.nombreGrupo + ": " + orden);
 
         if (!fichasOrdenadas) {
@@ -791,6 +809,15 @@ public class ManejadorJuego : MonoBehaviour {
         }
     }
 
+    public void EjecutarTurno(MensajeTurno turno) {
+        if(turno.jugador == MensajeTurno.Jugador.Anfitrion) {
+            turnoJugador = false;
+        } else {
+            turnoJugador = true;
+        }
+        ActualizarMensajeTurno();
+    }
+
     public void TerminarTurno() {
         turnoJugador = false;
         ActualizarMensajeTurno();
@@ -804,6 +831,9 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     public void IniciarNuevaRonda() {
+
+        //Sumar al contador de ronda
+        ronda++;
 
         //Borrar todas las cartas y fichas del tablero. Volver a crear los set
         CreadorDeSets.BorrarTodasLasCartasYFichas();
@@ -837,9 +867,11 @@ public class ManejadorJuego : MonoBehaviour {
         if(jugador.sumaFichas > oponente.sumaFichas) {
             jugador.sellosDeExcelencia++;
             mensajeDialogo += "Has ganado esta ronda por mayoría de fichas.\n";
+            ultimoGanador = jugador;
         } else if(jugador.sumaFichas < oponente.sumaFichas) {
             oponente.sellosDeExcelencia++;
             mensajeDialogo += "Has perdido esta ronda por minoría de fichas.\n";
+            ultimoGanador = oponente;
         } 
         
         //En caso de empate de fichas
@@ -847,9 +879,11 @@ public class ManejadorJuego : MonoBehaviour {
             if(jugador.fichasBonificacion > oponente.fichasBonificacion) {
                 jugador.sellosDeExcelencia++;
                 mensajeDialogo += "Has ganado esta ronda por mayoría de fichas de bonificación.\n";
+                ultimoGanador = jugador;
             } else if (jugador.fichasBonificacion < oponente.fichasBonificacion) {
                 oponente.sellosDeExcelencia++;
                 mensajeDialogo += "Has perdido esta ronda por minoría de fichas de bonificación.\n";
+                ultimoGanador = oponente;
             } 
             
             //En caso de empate de fichas de bonificación
@@ -857,9 +891,11 @@ public class ManejadorJuego : MonoBehaviour {
                 if (jugador.fichasProducto > oponente.fichasProducto) {
                     jugador.sellosDeExcelencia++;
                     mensajeDialogo += "Has ganado esta ronda por mayoría de fichas de producto.\n";
+                    ultimoGanador = jugador;
                 } else if (jugador.fichasProducto < oponente.fichasProducto) {
                     oponente.sellosDeExcelencia++;
                     mensajeDialogo += "Has perdido esta ronda por minoría de fichas de producto.\n";
+                    ultimoGanador = oponente;
                 }
             }
         }

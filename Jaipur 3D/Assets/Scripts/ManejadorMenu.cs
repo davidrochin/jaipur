@@ -37,6 +37,7 @@ public class ManejadorMenu : MonoBehaviour {
 
     public void MostrarMenuUnirse(bool valor) {
         menuUnirse.SetActive(valor);
+        FindObjectOfType<ManejadorRed>().CargarUltimaIP();
     }
 
     public void MostrarMenuPausa(bool valor) {

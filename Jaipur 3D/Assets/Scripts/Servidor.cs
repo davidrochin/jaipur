@@ -53,10 +53,10 @@ public class Servidor : MonoBehaviour {
     }
 
     public void CrearServidor() {
-        //NetworkServer.RegisterHandler(MensajeString.TIPO, EnviarStringATodos);
         NetworkServer.RegisterHandler(Movimiento.TIPO, EnviarMovimientoAlOtro);
         NetworkServer.RegisterHandler(MensajeAccion.TIPO, EnviarAccionAlOtro);
-        NetworkServer.RegisterHandler(Orden.TIPO, EnviarOrdenAlOtro);
+        NetworkServer.RegisterHandler(MensajeOrden.TIPO, EnviarOrdenAlOtro);
+        NetworkServer.RegisterHandler(MensajeTurno.TIPO, EnviarTurnoAlOtro);
         NetworkServer.Listen(puerto);
     }
 
@@ -92,12 +92,24 @@ public class Servidor : MonoBehaviour {
     }
 
     public void EnviarOrdenAlOtro(NetworkMessage mensajeRed) {
-        Orden msjOrden = mensajeRed.ReadMessage<Orden>();
+        MensajeOrden msjOrden = mensajeRed.ReadMessage<MensajeOrden>();
         Cliente cliente = FindObjectOfType<Cliente>();
         foreach (NetworkConnection conn in NetworkServer.connections) {
             if (conn != null) {
                 if (conn.connectionId != mensajeRed.conn.connectionId) {
-                    NetworkServer.SendToClient(conn.connectionId, Orden.TIPO, msjOrden);
+                    NetworkServer.SendToClient(conn.connectionId, MensajeOrden.TIPO, msjOrden);
+                }
+            }
+        }
+    }
+
+    public void EnviarTurnoAlOtro(NetworkMessage mensajeRed) {
+        MensajeTurno msjTurno = mensajeRed.ReadMessage<MensajeTurno>();
+        Cliente cliente = FindObjectOfType<Cliente>();
+        foreach (NetworkConnection conn in NetworkServer.connections) {
+            if (conn != null) {
+                if (conn.connectionId != mensajeRed.conn.connectionId) {
+                    NetworkServer.SendToClient(conn.connectionId, MensajeTurno.TIPO, msjTurno);
                 }
             }
         }
