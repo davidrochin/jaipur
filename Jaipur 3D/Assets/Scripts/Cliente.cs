@@ -9,6 +9,8 @@ public class Cliente : MonoBehaviour {
     public NetworkClient cliente;
     public ManejadorJuego manejadorJuego;
 
+    public Coroutine rutinaTimeout;
+
     private void Awake() {
         DontDestroyOnLoad(gameObject);
     }
@@ -21,10 +23,12 @@ public class Cliente : MonoBehaviour {
         cliente.RegisterHandler(MensajeOrden.TIPO, EjecutarOrden);
         cliente.RegisterHandler(MensajeTurno.TIPO, EjecutarTurno);
         Debug.Log("Tratando de conectarse a " + ip + " en el puerto " + puerto);
+        rutinaTimeout = StartCoroutine(Timeout());
         cliente.Connect(ip, puerto);
     }
 
     public void AlConectarse(NetworkMessage mensajeRed) {
+        StopCoroutine(rutinaTimeout);
         Debug.Log("Conectado al servidor.");
         StartCoroutine(RevisarConexionAServidor());
     }
@@ -101,6 +105,13 @@ public class Cliente : MonoBehaviour {
             }
             yield return new WaitForSeconds(2f);
         }
+    }
+
+    IEnumerator Timeout() {
+        yield return new WaitForSeconds(10f);
+        FindObjectOfType<ManejadorRed>().CerrarTodo();
+        FindObjectOfType<ManejadorMenu>().MostrarMenuConectarse(false);
+        FindObjectOfType<CreadorDialogos>().CrearDialogo("Tiempo de espera agotado.", CreadorDialogos.AccionBoton.Nada);
     }
 
 }

@@ -475,10 +475,10 @@ public class ManejadorJuego : MonoBehaviour {
     }
 
     public void DarFichaBonificacion(int vendidas, Grupo grupoDestino) {
-        //Debug.Log("Vendidas: " + vendidas);
 
         Grupo grupoCorrecto = null;
 
+        //Determinar de que tipo de ficha Bonus se le va a dar
         switch (vendidas) {
             case 3:
                 grupoCorrecto = fichasBonus3;
@@ -491,6 +491,7 @@ public class ManejadorJuego : MonoBehaviour {
                 break;
         }
 
+        //Si vendió más de 5, darle Bonus5
         if(vendidas > 5) {
             grupoCorrecto = fichasBonus5;
         }
@@ -508,6 +509,7 @@ public class ManejadorJuego : MonoBehaviour {
             }
 
             fichaADar.EnviarAGrupo(grupoDestino);
+            fichaADar.ActualizarValor();
         }
     }
 

@@ -70,6 +70,10 @@ public class Ficha : MonoBehaviour {
             return;
         }
 
+        ActualizarValor();
+    }
+
+    public void ActualizarValor() {
         foreach (Transform hijo in transform) {
             TextMesh texto = hijo.GetComponent<TextMesh>();
             if (texto != null) {
