@@ -49,6 +49,19 @@ public class BotonesDebug : MonoBehaviour {
                     }
                 }
             }
+            if (GUILayout.Button("Vender todas las cartas")) {
+                List<int> ids = new List<int>();
+                List<Carta> cartas = new List<Carta>(FindObjectsOfType<Carta>());
+                Movimiento mov = new Movimiento();
+                mov.tipoMovimiento = Movimiento.TipoMovimiento.Vender;
+                manejador.DarFichasPorCartas(cartas.ToArray(), manejador.fichasJugador);
+                foreach (Carta carta in cartas) {
+                    ids.Add(carta.id);
+                    carta.EnviarAGrupo(manejador.mazoDescartar);
+                }
+                mov.ids = ids.ToArray();
+                cliente.EnviarMovimiento(mov);
+            }
         }
         
     }

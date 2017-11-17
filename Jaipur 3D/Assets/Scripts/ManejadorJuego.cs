@@ -268,7 +268,7 @@ public class ManejadorJuego : MonoBehaviour {
         //Si es Plata, Oro o Diamante, revisar que sean minimo 2
         if(primerMaterial == Carta.TipoMercancia.Plata || primerMaterial == Carta.TipoMercancia.Oro || primerMaterial == Carta.TipoMercancia.Diamante) {
             if(seleccion.cartasSeleccionadas.Count < 2) {
-                ImprimirPanelMensaje("¡Ese tipo de mercancía solo se puede vender de a 2!");
+                ImprimirPanelMensaje("¡Necesitas mínimo 2 cartas de este tipo de mercancía para vender!");
                 return;
             }
         }
@@ -371,7 +371,7 @@ public class ManejadorJuego : MonoBehaviour {
             return;
         }
 
-        //Hacer el trueque
+        //Todo está bien. Hacer el trueque
         foreach (Carta carta in seleccion.cartasSeleccionadas) {
 
             //Agregar la carta a la lista de cartas movidas para posteriormente mandarlas al otro cliente.
@@ -383,6 +383,8 @@ public class ManejadorJuego : MonoBehaviour {
                 carta.transform.SetParent(mazoMercado.transform);
             }
         }
+
+        ImprimirPanelMensaje("Has cambiado " + seleccion.cartasSeleccionadas.Count / 2 + " cartas por " + seleccion.cartasSeleccionadas.Count / 2 + " cartas.");
 
         //Generar el objeto de tipo Movimiento que se va a enviar
         Movimiento mov = new Movimiento();
@@ -757,6 +759,13 @@ public class ManejadorJuego : MonoBehaviour {
                         } else {
                             carta.transform.SetParent(mazoOponente.transform);
                         }
+
+                        if(carta.mercancia == Carta.TipoMercancia.Camello) {
+                            ImprimirPanelMensaje("Tu oponente ha tomado todos los camellos.");
+                        } else {
+                            ImprimirPanelMensaje("Tu oponente ha tomado una carta de " + carta.mercancia.ToString());
+                        }
+                        
                     }
                 }
                 LlenarMercado();
@@ -770,6 +779,7 @@ public class ManejadorJuego : MonoBehaviour {
                         carta.EnviarAGrupo(mazoDescartar);
                     }
                 }
+                ImprimirPanelMensaje("Tu oponente ha vendido " + cartasVendidas.Count + " carta(s) de " + cartasVendidas[0].mercancia.ToString() + ".");
                 DarFichasPorCartas(cartasVendidas.ToArray(), fichasOponente);
                 break;
             case Movimiento.TipoMovimiento.Trueque:
@@ -785,6 +795,7 @@ public class ManejadorJuego : MonoBehaviour {
                         }
                     }
                 }
+                ImprimirPanelMensaje("Tu oponente ha cambiado " + movimiento.ids.Length / 2 + " cartas por " + movimiento.ids.Length / 2 + " cartas.");
                 break;
         }
 

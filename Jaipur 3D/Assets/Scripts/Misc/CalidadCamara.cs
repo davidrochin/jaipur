@@ -22,7 +22,8 @@ public class CalidadCamara : MonoBehaviour {
         FindObjectOfType<PostProcessingBehaviour>().profile = ajustes[nivelCalidad].perfil;
 
         if(nivelCalidad == 0) {
-            FindObjectOfType<Light>().intensity = 8f;
+            FindObjectOfType<Light>().intensity = 13f;
+            FindObjectOfType<Light>().spotAngle = 180f;
         }
 
 	}
