@@ -194,22 +194,8 @@ public class Grupo : MonoBehaviour {
         autoActualizarHijos = false;
         List<Carta> estadoCartas = new List<Carta>();
 
-        //Revolver el arreglo
-        for (int x = 0; x < hijos.Length; x++) {
-            int nuevoIndex = Random.Range(0, hijos.Length - 1);
-            GameObject temporal = hijos[nuevoIndex];
-            hijos[nuevoIndex] = hijos[x];
-            hijos[x] = temporal;
-        }
-
-        //Quitar los hijos actuales
-        foreach (Transform x in transform) {
-            x.SetParent(null);
-        }
-
-        //Reagregar el arreglo
-        foreach (GameObject go in hijos) {
-            go.transform.SetParent(transform);
+        foreach (Transform hijo in transform) {
+            hijo.SetSiblingIndex(Random.Range(0, transform.childCount));
         }
 
         //Checar en que orden quedaron para regresarlo despues
