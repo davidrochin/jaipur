@@ -180,7 +180,7 @@ public class ManejadorJuego : MonoBehaviour {
                 ImprimirPanelMensaje("Necesitas seleccionar al menos una carta.");
                 return;
             } else if (seleccion.cartasSeleccionadas.Count > 1) {
-                ImprimirPanelMensaje("No puedes tomar mas de una carta, al menos sean camellos.");
+                ImprimirPanelMensaje("No puedes tomar más de una carta, al menos que sean camellos.");
                 return;
             }
         }
@@ -316,7 +316,7 @@ public class ManejadorJuego : MonoBehaviour {
         }
 
         if (cartasSelecionadasMercado > cartasSeleccionadasJugador) {
-            ImprimirPanelMensaje("¡No puedes recibir mas cartas que las que ofreces!");
+            ImprimirPanelMensaje("¡No puedes recibir más cartas que las que ofreces!");
             return;
         } else if (cartasSelecionadasMercado < cartasSeleccionadasJugador) {
             ImprimirPanelMensaje("¡No puedes recibir menos cartas que las que ofreces!");
@@ -763,7 +763,7 @@ public class ManejadorJuego : MonoBehaviour {
                         if(carta.mercancia == Carta.TipoMercancia.Camello) {
                             ImprimirPanelMensaje("Tu oponente ha tomado todos los camellos.");
                         } else {
-                            ImprimirPanelMensaje("Tu oponente ha tomado una carta de " + carta.mercancia.ToString());
+                            ImprimirPanelMensaje("Tu oponente ha tomado una carta de " + carta.mercancia.ToString() + ".");
                         }
                         
                     }
