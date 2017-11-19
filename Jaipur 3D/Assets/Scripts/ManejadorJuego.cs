@@ -1022,7 +1022,7 @@ public class ManejadorJuego : MonoBehaviour {
     #endregion
 
     private void OnGUI() {
-        if(servidor == null && cliente == null) {
+        if(servidor == null && cliente == null && Application.platform == RuntimePlatform.WindowsEditor) {
             if (GUILayout.Button("Iniciar Prueba")) {
                 FindObjectOfType<ManejadorRed>().ConfigurarComoPrueba();
             }
