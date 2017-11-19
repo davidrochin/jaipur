@@ -11,7 +11,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
+  companyName: ITLM
   productName: Jaipur 3D
   defaultCursor: {fileID: 2800000, guid: 1b65c7a47d9e0114f9fe4709931adac2, type: 3}
   cursorHotspot: {x: 0, y: 0}
@@ -153,6 +153,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.davidrochin.jaipur3d
+    Standalone: com.ITLM.Jaipur3D
   buildNumber: {}
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 16
